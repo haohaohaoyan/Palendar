@@ -1,0 +1,2 @@
+{"name": "First day of school", "date": "2025-08-18", "priority": 0}
+{"name": "Christmas", "date": "2025-12-25", "priority": 0}

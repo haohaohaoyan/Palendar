@@ -3,9 +3,11 @@ import datetime
 
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
-calendar_date = document.querySelector("#calendar-date")
+calendar_month = document.querySelector("#calendar-month")
 
 def setup():
-    calendar_date.innerText = MONTHS[int(datetime.date.today().month)-1]
+    calendar_month.innerText = MONTHS[int(datetime.date.today().month)-1]
+    #Oh no
+    
 
 setup()

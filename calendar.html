@@ -12,39 +12,59 @@
     <script type="module" src="https://pyscript.net/releases/2025.8.1/core.js"></script>
 </head>
 <body>
-    <h1 id="calendar-date"></h1>
-    <div class="container text-left">
-        <div class="row row-cols-7"> <!--Used AI to add columns-->
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
-            <div class="col"><div class="card" style="width:8rem; height: 8rem;">this is a card</div></div>
+    <style>
+        .calendar-main {
+            margin: auto;
+        }
 
+        .calendar-week {
+            display: grid;
+            width: 100vw;
+            grid-template-columns: repeat(7,10vw);
+        }
+
+        .calendar-day {
+            width: 10vw;
+            border: 3px solid black;
+            border-radius: 4px;
+            overflow-wrap: break-word;
+        }
+    </style>
+    <div class="calendar-main">
+        <h1 id="calendar-month"></h1>
+        <div class="calendar-body">
+            <div class="calendar-week">
+                <h3>Sunday</h3>
+                <h3>Monday</h3>
+                <h3>Tuesday</h3>
+                <h3>Wednesday</h3>
+                <h3>Thursday</h3>
+                <h3>Friday</h3>
+                <h3>Saturday</h3>
+            </div>
+            <div class="calendar-week">
+                <div class="calendar-day">
+                    <p>hi i am a very very long string ffiojm;aewawefefefeffuiaojffvefuiojfuioj;aewjou;fgjou;faejwfj</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+                <div class="calendar-day">
+                    <p>hi</p>
+                </div>
+            </div>
         </div>
     </div>
     <script type="py" src="calendar-setup.py"></script>

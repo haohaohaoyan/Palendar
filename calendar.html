@@ -13,27 +13,42 @@
 </head>
 <body>
     <style>
+        th, td {
+            width: 10vw
+        }
+
         .calendar-main {
             margin: auto;
         }
 
-        .calendar-week {
+        #calendar-weekdays {
             display: grid;
-            width: 100vw;
-            grid-template-columns: repeat(7,10vw);
+            grid-template-columns: repeat(7,10vw)
+        }
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 10vw)
         }
 
         .calendar-day {
             width: 10vw;
-            border: 3px solid black;
+            min-height: 6vw;
+            border: 2px solid black;
+            border-radius: 4px;
+            overflow-wrap: break-word;
+        }
+
+        .calendar-day-past {
+            width: 10vw;
+            min-height: 6vw;
+            border: 2px solid gray;
             border-radius: 4px;
             overflow-wrap: break-word;
         }
     </style>
     <div class="calendar-main">
         <h1 id="calendar-month"></h1>
-        <div class="calendar-body">
-            <div class="calendar-week">
+        <div id="calendar-weekdays">
                 <h3>Sunday</h3>
                 <h3>Monday</h3>
                 <h3>Tuesday</h3>
@@ -41,31 +56,9 @@
                 <h3>Thursday</h3>
                 <h3>Friday</h3>
                 <h3>Saturday</h3>
-            </div>
-            <div class="calendar-week">
-                <div class="calendar-day">
-                    <p>hi i am a very very long string ffiojm;aewawefefefeffuiaojffvefuiojfuioj;aewjou;fgjou;faejwfj</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-                <div class="calendar-day">
-                    <p>hi</p>
-                </div>
-            </div>
         </div>
+        <div class="calendar-body">
+        </table>
     </div>
     <script type="py" src="calendar-setup.py"></script>
 </body>

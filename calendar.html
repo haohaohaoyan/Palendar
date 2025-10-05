@@ -13,8 +13,10 @@
 </head>
 <body>
     <style>
-        th, td {
-            width: 10vw
+        .top-bar {
+            display: flex; 
+            flex-direction: row;
+            height: 3vh;
         }
 
         .calendar-main {
@@ -30,10 +32,23 @@
             grid-template-columns: repeat(7, 10vw)
         }
 
+        /* inefficiency fawiojaswewfaijo;feaijo;fafioj;afijo;awf */
+
         .calendar-day {
             width: 10vw;
             min-height: 6vw;
             border: 2px solid black;
+            color: black;
+            border-radius: 4px;
+            overflow-wrap: break-word;
+        }
+
+        .calendar-day-today {
+            width: 10vw;
+            min-height: 6vw;
+            border: 2px solid cornflowerblue;
+            color: cornflowerblue;
+            background-color: rgba(100, 148, 237, 0.212);
             border-radius: 4px;
             overflow-wrap: break-word;
         }
@@ -42,12 +57,29 @@
             width: 10vw;
             min-height: 6vw;
             border: 2px solid gray;
+            color: gray;
             border-radius: 4px;
             overflow-wrap: break-word;
         }
+
+        .event {
+            width: 90%;
+            border: 2px solid black;
+            color: black;
+            overflow-wrap: break-word;
+        }
+
     </style>
     <div class="calendar-main">
-        <h1 id="calendar-month"></h1>
+        <div class="top-bar">
+            <input type="month" id="calendar-selector"/>
+            <button id="button-month-left">
+                <
+            </button>
+            <button id="button-month-right">
+                >
+            </button>
+        </div>
         <div id="calendar-weekdays">
                 <h3>Sunday</h3>
                 <h3>Monday</h3>

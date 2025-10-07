@@ -15,6 +15,9 @@ button_month_right = document.querySelector("#button-month-right")
 current_month = datetime.date.today().month
 current_year = datetime.date.today().year
 
+#Set first weekday from Mon to Sun
+calendar.setfirstweekday(calendar.SUNDAY)
+
 def setup(month,year):
     global current_month, current_year
     calendar_body.innerHTML = ""
@@ -24,7 +27,8 @@ def setup(month,year):
     #Am i just bad at logic *kill me now*
     index = 0
     after_index = 1
-    for i in range(1,(calendar.weekday(year,month,1)+2)%7):
+    for i in range(1,(calendar.weekday(year,month,1)+2)):
+        #+2 because 1 for the range exclusion and 1 for pushing the index from 0
         calendar_body.innerHTML += "<div class='calendar-day calendar-day--past'>" + str(i) + "</div>"
         index += 1
     for i in range(1,calendar.monthrange(year,month)[1]+1):

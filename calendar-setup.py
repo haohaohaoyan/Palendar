@@ -1,6 +1,6 @@
-from pyscript import document
+from pyscript import document, window
 from pyodide.ffi.wrappers import add_event_listener
-import datetime, calendar
+import datetime, calendar, json, os
 #no way there's literally an entire module dedicated to this *surprise*
 
 #Constants in caps
@@ -25,17 +25,26 @@ def setup(month,year):
     index = 0
     after_index = 1
     for i in range(1,(calendar.weekday(year,month,1)+2)%7):
-        calendar_body.innerHTML += "<div class='calendar-day-past'>" + str(i) + "</div>"
+        calendar_body.innerHTML += "<div class='calendar-day calendar-day--past'>" + str(i) + "</div>"
         index += 1
     for i in range(1,calendar.monthrange(year,month)[1]+1):
         calendar_body.innerHTML += "<div class='calendar-day' id=d" + str(i).zfill(2) + "-" + str(month).zfill(2) + "-" + str(year) + ">" + str(i) + "</div>"
         index += 1
     while index % 7 != 0:
-        calendar_body.innerHTML += "<div class='calendar-day-past'>" + str(after_index) + "</div>"
+        calendar_body.innerHTML += "<div class='calendar-day calendar-day--past'>" + str(after_index) + "</div>"
         index += 1
         after_index += 1
     #find current date and highlight hhhggkghkgkhghkghkg
-    document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day-today"
+    document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day calendar-day--today"
+    #put events loader here ig
+    try:
+        with open("events.txt", "r") as events_file:
+            for event_raw in events_file:
+                event = json.loads(event_raw)
+                document.querySelector("#d" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
+    except FileNotFoundError:
+        raise(FileNotFoundError)
+        #placeholder
 
 def setup_wrapper(event):
     if event.currentTarget.id == button_month_left.id:

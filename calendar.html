@@ -35,6 +35,9 @@
         /* inefficiency fawiojaswewfaijo;feaijo;fafioj;afijo;awf */
 
         .calendar-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 10vw;
             min-height: 6vw;
             border: 2px solid black;
@@ -43,28 +46,22 @@
             overflow-wrap: break-word;
         }
 
-        .calendar-day-today {
-            width: 10vw;
-            min-height: 6vw;
+        .calendar-day--today {
             border: 2px solid cornflowerblue;
             color: cornflowerblue;
             background-color: rgba(100, 148, 237, 0.212);
-            border-radius: 4px;
-            overflow-wrap: break-word;
         }
 
-        .calendar-day-past {
-            width: 10vw;
-            min-height: 6vw;
+        .calendar-day--past {
             border: 2px solid gray;
             color: gray;
-            border-radius: 4px;
-            overflow-wrap: break-word;
         }
 
         .event {
-            width: 90%;
+            width: 95%;
+            min-height: 30px;
             border: 2px solid black;
+            border-radius: 4px;
             color: black;
             overflow-wrap: break-word;
         }
@@ -92,6 +89,6 @@
         <div class="calendar-body">
         </div>
     </div>
-    <script type="py" src="calendar-setup.py"></script>
+    <script type="py" src="calendar-setup.py" config="files.json"></script>
 </body>
 </html>

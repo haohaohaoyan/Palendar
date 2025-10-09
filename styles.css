@@ -24,7 +24,7 @@
 
 
 
-#agent-message{
+.agent-message{
     display: block;
     width: 60%;
     background-color: whitesmoke;
@@ -36,7 +36,7 @@
 
 }
 
-#user-message{
+.user-message{
     display: block;
     width: 60%;
     background-color: rgb(56, 109, 184);

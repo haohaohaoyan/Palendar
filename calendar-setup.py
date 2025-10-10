@@ -1,6 +1,6 @@
 from pyscript import document, window
 from pyodide.ffi.wrappers import add_event_listener
-import datetime, calendar, json, os
+import datetime, calendar, json
 #no way there's literally an entire module dedicated to this *surprise*
 
 #Constants in caps

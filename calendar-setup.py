@@ -10,6 +10,7 @@ calendar_selector = document.querySelector("#calendar-selector")
 calendar_body = document.querySelector(".calendar-body")
 button_month_left = document.querySelector("#button-month-left")
 button_month_right = document.querySelector("#button-month-right")
+day_modal = document.querySelector(".day-edit-modal")
 
 #variable
 current_month = datetime.date.today().month
@@ -41,11 +42,15 @@ def setup(month,year):
     #find current date and highlight hhhggkghkgkhghkghkg
     document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day calendar-day--today"
     #put events loader here ig
+    #placeholder events.txt loaded into virtual filesystem
     try:
         with open("events.txt", "r") as events_file:
             for event_raw in events_file:
                 event = json.loads(event_raw)
-                document.querySelector("#d" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
+                try:
+                    document.querySelector("#d" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
+                except AttributeError:
+                    pass
     except FileNotFoundError:
         raise(FileNotFoundError)
         #placeholder
@@ -66,8 +71,16 @@ def setup_wrapper(event):
     if event.currentTarget.id == calendar_selector.id:
         setup(int(event.currentTarget.value.split("-")[1]), int(event.currentTarget.value.split("-")[0]))
 
+def day_open_modal(event):
+    day_modal.style.display = "flex"
+    day_modal.style.top = str(event.clientY) + "px"
+    day_modal.style.left = str(event.clientX) + "px"
+    day_modal.innerText = event.target.id
+
 setup(current_month, current_year)
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)
 add_event_listener(calendar_selector, "change", setup_wrapper)
+for day in document.querySelectorAll(".calendar-day"):
+    add_event_listener(day, "click", day_open_modal)

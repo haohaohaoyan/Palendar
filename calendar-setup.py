@@ -1,4 +1,4 @@
-from pyscript import document, window
+from pyscript import document, window, when
 from pyodide.ffi.wrappers import add_event_listener
 import datetime, calendar, json
 #no way there's literally an entire module dedicated to this *surprise*
@@ -6,11 +6,16 @@ import datetime, calendar, json
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #Document objects
+#Calendar
 calendar_selector = document.querySelector("#calendar-selector")
 calendar_body = document.querySelector(".calendar-body")
 button_month_left = document.querySelector("#button-month-left")
 button_month_right = document.querySelector("#button-month-right")
-day_modal = document.querySelector(".day-edit-modal")
+#Event create modal
+day_modal = document.querySelector(".day-modal")
+day_modal_title = document.querySelector(".day-modal > #title")
+event_create_name = document.querySelector("#event-create-name")
+date_storage = document.querySelector("#day-storage")
 
 #variable
 current_month = datetime.date.today().month
@@ -26,6 +31,7 @@ def setup(month,year):
     current_month = month
     current_year = year
     #Am i just bad at logic *kill me now*
+    day_modal.style.display = "none"
     index = 0
     after_index = 1
     for i in range(1,(calendar.weekday(year,month,1)+2)):
@@ -48,12 +54,15 @@ def setup(month,year):
             for event_raw in events_file:
                 event = json.loads(event_raw)
                 try:
-                    document.querySelector("#d" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
+                    document.querySelector("#" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
                 except AttributeError:
                     pass
     except FileNotFoundError:
         raise(FileNotFoundError)
         #placeholder
+    #add all event listeners
+    for day in document.querySelectorAll(".calendar-day"):
+        add_event_listener(day, "click", day_open_modal)
 
 def setup_wrapper(event):
     if event.currentTarget.id == button_month_left.id:
@@ -75,12 +84,40 @@ def day_open_modal(event):
     day_modal.style.display = "flex"
     day_modal.style.top = str(event.clientY) + "px"
     day_modal.style.left = str(event.clientX) + "px"
-    day_modal.innerText = event.target.id
+    date_list = event.currentTarget.id.split("-")
+    #For later
+    date_storage.innerText = event.currentTarget.id
+    day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
+
+@when("click", ".day-modal > #close")
+def close_modal():
+    day_modal.style.display = "none"
+
+@when("click", "#event-create-save")
+def save_event():
+    if event_create_name.value == "":
+        window.alert("No name for event!")
+    else:
+        try:
+            event_file = open("events.txt", "a+")
+            out = dict(
+                name = event_create_name.value, 
+                date = date_storage.innerText,
+                priority = 0
+            )
+            event_file.write("\n")
+            json.dump(out, event_file)
+            #I have no clue how this below line makes it work, even while doing nothing. DON'T TOUCH IT.
+            event_file.readlines()
+            setup(current_month, current_year)
+            #Clear
+            event_create_name.value = ""
+        except FileNotFoundError:
+            pass
+            #Not needed yet until localstorage implement
 
 setup(current_month, current_year)
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)
 add_event_listener(calendar_selector, "change", setup_wrapper)
-for day in document.querySelectorAll(".calendar-day"):
-    add_event_listener(day, "click", day_open_modal)

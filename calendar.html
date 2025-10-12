@@ -20,20 +20,31 @@
         .top-bar {
             display: flex; 
             flex-direction: row;
+            justify-content: center;
             height: 3vh;
+            width: 10vw;
+            margin: auto;
         }
 
         .calendar-main {
             margin: auto;
+            width: 70vw;
+        }
+
+        #calendar-selector {
+            border-style: none;
+            font: bold 2em "Arial", sans-serif;
+            width: 9em;
         }
 
         #calendar-weekdays {
             display: grid;
-            grid-template-columns: repeat(7,10vw)
+            grid-template-columns: repeat(7,10vw);
+            text-align: center;
         }
         .calendar-body {
             display: grid;
-            grid-template-columns: repeat(7, 10vw)
+            grid-template-columns: repeat(7, 10vw);
         }
 
         /* inefficiency fawiojaswewfaijo;feaijo;fafioj;afijo;awf */
@@ -105,10 +116,10 @@
     </style>
     <div class="calendar-main">
         <div class="top-bar">
-            <input type="month" id="calendar-selector"/>
             <button id="button-month-left">
                 <
             </button>
+            <input type="month" id="calendar-selector"/>
             <button id="button-month-right">
                 >
             </button>
@@ -127,11 +138,11 @@
         <div class="day-modal">
             <!--Currently all placeholder assets, not much styling-->
             <button id="close">x</button>
-            <h4 id="title"></h4>
+            <h4 id="title" title="Click on the day to put the event on"></h4>
             <p id="date-storage"></p>
             <input placeholder="Name" id="event-create-name"/>
             <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
-            <input type="color" id="event-create-color" placeholder="Color">
+            <input type="color" id="event-create-color" placeholder="Color" title="Event color (optional)">
             <button id="event-create-save">Save</button>
         </div>
     </div>

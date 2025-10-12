@@ -15,6 +15,7 @@ button_month_right = document.querySelector("#button-month-right")
 day_modal = document.querySelector(".day-modal")
 day_modal_title = document.querySelector(".day-modal > #title")
 event_create_name = document.querySelector("#event-create-name")
+event_create_description = document.querySelector("#event-create-description")
 date_storage = document.querySelector("#day-storage")
 
 #variable
@@ -54,7 +55,7 @@ def setup(month,year):
             for event_raw in events_file:
                 event = json.loads(event_raw)
                 try:
-                    document.querySelector("#" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event'><p>" + event["name"] + "</p></div>")
+                    document.querySelector("#" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event' title='" + event["description"] + "'><p>" + event["name"] + "</p></div>")
                 except AttributeError:
                     pass
     except FileNotFoundError:
@@ -103,7 +104,7 @@ def save_event():
             out = dict(
                 name = event_create_name.value, 
                 date = date_storage.innerText,
-                priority = 0
+                description = event_create_description.value,
             )
             event_file.write("\n")
             json.dump(out, event_file)
@@ -112,6 +113,7 @@ def save_event():
             setup(current_month, current_year)
             #Clear
             event_create_name.value = ""
+            event_create_description.value = ""
         except FileNotFoundError:
             pass
             #Not needed yet until localstorage implement

@@ -26,6 +26,17 @@
             margin: auto;
         }
 
+        .top-bar > button {
+            border-style: none;
+            font: bold 1.4em "Helvetica", sans-serif;
+            background-color: white;
+        }
+
+        .top-bar > button:hover {
+            cursor: pointer;
+            background-color: lightgray;
+        }
+
         .calendar-main {
             margin: auto;
             width: 70vw;
@@ -100,6 +111,14 @@
             right: 0;
             width: 10%;
             height: 10%;
+            border-style: none;
+            background-color: white;
+            text-align: center;
+        }
+
+        .day-modal > #close:hover {
+            cursor: pointer;
+            background-color: lightgray;
         }
 
         .day-modal > #event-create-description {
@@ -137,7 +156,7 @@
         </div>
         <div class="day-modal">
             <!--Currently all placeholder assets, not much styling-->
-            <button id="close">x</button>
+            <button id="close" title="Close event creation modal">X</button>
             <h4 id="title" title="Click on the day to put the event on"></h4>
             <p id="date-storage"></p>
             <input placeholder="Name" id="event-create-name"/>

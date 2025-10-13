@@ -20,20 +20,42 @@
         .top-bar {
             display: flex; 
             flex-direction: row;
+            justify-content: center;
             height: 3vh;
+            width: 10vw;
+            margin: auto;
+        }
+
+        .top-bar > button {
+            border-style: none;
+            font: bold 1.4em "Helvetica", sans-serif;
+            background-color: white;
+        }
+
+        .top-bar > button:hover {
+            cursor: pointer;
+            background-color: lightgray;
         }
 
         .calendar-main {
             margin: auto;
+            width: 70vw;
+        }
+
+        #calendar-selector {
+            border-style: none;
+            font: bold 2em "Arial", sans-serif;
+            width: 9em;
         }
 
         #calendar-weekdays {
             display: grid;
-            grid-template-columns: repeat(7,10vw)
+            grid-template-columns: repeat(7,10vw);
+            text-align: center;
         }
         .calendar-body {
             display: grid;
-            grid-template-columns: repeat(7, 10vw)
+            grid-template-columns: repeat(7, 10vw);
         }
 
         /* inefficiency fawiojaswewfaijo;feaijo;fafioj;afijo;awf */
@@ -70,13 +92,86 @@
             overflow-wrap: break-word;
         }
 
+        .day-modal {
+            display: none;
+            position: fixed;
+            flex-direction: column;
+            top: 0;
+            left: 0;
+            width: 12vw;
+            border: 2px solid black;
+            background-color: white;
+            padding: 5px;
+        }
+
+        .close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            border-style: none;
+            background-color: white;
+            text-align: center;
+        }
+
+        .day-modal > #close:hover {
+            cursor: pointer;
+            background-color: lightgray;
+        }
+
+        .day-modal > #event-create-description {
+            height: 160px;
+        }
+
+        .day-modal > #event-create-color {
+            width: 50%;
+        }
+
+        #date-storage, #event-date-storage {
+            display: none;
+        }
+
+        .event-view-modal {
+            display: none;
+            position: fixed;
+            flex-direction: column;
+            top: 0;
+            left: 0;
+            width: 12vw;
+            border: 2px solid black;
+            background-color: white;
+            padding: 5px;
+        }
+
+        #event-view-description {
+            max-height: 160px;
+            overflow-y: scroll;
+            overflow-wrap: break-word;
+        }
+
+        .button-bar {
+            display: grid;
+            grid-template-columns: repeat(4,25%);
+            width: 100%;
+        }
+
+        #event-edit-button {
+            width: 100%;
+            grid-column: 1 / 3;
+        }
+        
+        #event-delete-button {
+            width: 100%;
+            grid-column: 3 / 5;
+        }
     </style>
     <div class="calendar-main">
         <div class="top-bar">
-            <input type="month" id="calendar-selector"/>
             <button id="button-month-left">
                 <
             </button>
+            <input type="month" id="calendar-selector"/>
             <button id="button-month-right">
                 >
             </button>
@@ -91,6 +186,26 @@
                 <h3>Saturday</h3>
         </div>
         <div class="calendar-body">
+        </div>
+        <div class="day-modal">
+            <!--Currently all placeholder assets, not much styling-->
+            <button class="close" title="Close event creation modal">X</button>
+            <h4 class="title" title="Click on the day to put the event on"></h4>
+            <p id="date-storage"></p>
+            <input placeholder="Name" id="event-create-name"/>
+            <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
+            <input type="color" id="event-create-color" placeholder="Color" title="Event color (optional)">
+            <button id="event-create-save">Save</button>
+        </div>
+        <div class="event-view-modal">
+            <button class="close" title="Close event view modal">X</button>
+            <h4 class="title"></h4>
+            <p id="event-date-storage"></p>
+            <p id="event-view-description"></p>
+            <div class="button-bar">
+                <button id="event-edit-button">Edit</button>
+                <button id="event-delete-button">Delete</button>
+            </div>
         </div>
     </div>
     <script type="py" src="calendar-setup.py" config="files.json"></script>

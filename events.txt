@@ -1,3 +1,0 @@
-{"name": "Due date for this thing", "date": "d30-10-2025", "description": "OH NO WE GOTTA FINISH THIS"}
-{"name": "Duplicate", "date": "d30-10-2025", "description": "hehe nyehehehehe"}
-{"name": "Oh no SS test", "date": "d08-10-2025", "description": "oh boy did ya study???"}

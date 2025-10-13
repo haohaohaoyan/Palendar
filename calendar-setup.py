@@ -1,6 +1,7 @@
 from pyscript import document, window, when
 from pyodide.ffi.wrappers import add_event_listener
-import datetime, calendar, json, random
+from pyodide.ffi import JsNull
+import datetime, calendar, json, random, ast
 #no way there's literally an entire module dedicated to this *surprise*
 
 #Constants in caps
@@ -17,11 +18,12 @@ day_modal_title = document.querySelector(".day-modal > .title")
 event_create_name = document.querySelector("#event-create-name")
 event_create_description = document.querySelector("#event-create-description")
 date_storage = document.querySelector("#day-storage")
+date_id_storage = document.querySelector("#date-id-storage")
 #Event view modal
 event_view_modal = document.querySelector(".event-view-modal")
 event_view_title = document.querySelector(".event-view-modal > .title")
 event_view_description = document.querySelector("#event-view-description")
-event_date_storage = document.querySelector("#event-date-storage")
+event_key_storage = document.querySelector("#event-key-storage")
 
 #variable
 current_month = datetime.date.today().month
@@ -30,12 +32,14 @@ current_year = datetime.date.today().year
 #Set first weekday from Mon to Sun
 calendar.setfirstweekday(calendar.SUNDAY)
 
+def htmlReformat(string):
+    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;"))
+
 def setup(month,year):
     global current_month, current_year
     calendar_body.innerHTML = ""
     calendar_selector.value = str(year) + "-" + str(month).zfill(2)
-    current_month = month
-    current_year = year
+    current_month, current_year = month, year
     #Am i just bad at logic *kill me now*
     day_modal.style.display = "none"
     event_view_modal.style.display = "none"
@@ -55,18 +59,24 @@ def setup(month,year):
     #find current date and highlight hhhggkghkgkhghkghkg
     document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day calendar-day--today"
     #put events loader here ig
-    #placeholder events.txt loaded into virtual filesystem
+    #Logic: First key is a list of existing event keys. All afterwards are events in dict form, upon creation checks if random id is already in use, if so regenerate
+    #gee i sure do hate having to deal with all these edge cases
     try:
-        with open("events.txt", "r") as events_file:
-            for event_raw in events_file:
-                event = json.loads(event_raw)
-                try:
-                    document.querySelector("#" + event["date"]).insertAdjacentHTML("beforeend", "<div class='event' title='" + event["description"] + "'><p>" + event["name"] + "</p></div>")
-                except AttributeError:
-                    pass
-    except FileNotFoundError:
-        raise(FileNotFoundError)
-        #placeholder
+        key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
+    except ValueError:
+        window.localStorage.setItem("event_keys", "[]")
+        setup(current_month, current_year)
+        return
+    if len(key_list) == 0:
+        window.localStorage.setItem("event_keys", "[]")
+    else:
+        for event_raw in key_list:
+            eventS = json.loads(window.localStorage.getItem(str(event_raw)))
+            try:
+                document.querySelector("#" + eventS["date"]).innerHTML += "<div class='event' id='" + str(event_raw) + "' title='" + str(eventS["description"]) + "'>" + eventS["name"] + "</div>"
+            except AttributeError:
+                #This really only comes up if the event is on a different month
+                pass
     #add all event listeners
     for day in document.querySelectorAll(".calendar-day"):
         add_event_listener(day, "click", day_open_modal)
@@ -96,6 +106,8 @@ def day_open_modal(event):
     date_list = event.currentTarget.id.split("-")
     #For later
     date_storage.innerText = event.currentTarget.id
+    date_id_storage.innerText = ""
+    #Empty to differentiate between creating and editing
     day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
 
 def event_open_modal(event):
@@ -107,7 +119,7 @@ def event_open_modal(event):
     event_view_title.innerText = event.currentTarget.innerText
     event_view_description.innerText = event.currentTarget.title
     #For later
-    event_date_storage.innerText = event.currentTarget.parentNode.id
+    event_key_storage.innerText = event.currentTarget.id
 
 @when("click", ".close")
 def close_modal(event):
@@ -118,43 +130,54 @@ def save_event():
     if event_create_name.value == "":
         window.alert("No name for event!")
     else:
-        try:
-            event_file = open("events.txt", "a+")
-            out = dict(
-                name = event_create_name.value, 
-                date = date_storage.innerText,
-                description = event_create_description.value,
-            )
-            json.dump(out, event_file)
-            event_file.write("\n")
-            event_file.close()
-            setup(current_month, current_year)
-            #Clear
-            event_create_name.value = ""
-            event_create_description.value = ""
-        except FileNotFoundError:
-            pass
-            #Not needed yet until localstorage implement
+        out = dict(
+            name = htmlReformat(event_create_name.value), 
+            date = date_storage.innerText,
+            description = htmlReformat(event_create_description.value),
+        )
+        if date_id_storage.innerText != "":
+            #Only filled when editing, otherwise blank as per the day_open_modal function
+            window.localStorage.setItem(date_id_storage.innerText, json.dumps(out))
+        else:
+            #Random 6-digit number for ids, prevents duplicate operations
+            key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
+            id=random.randint(100000,999999)
+            while id in key_list:
+                id=random.randint(100000,999999)
+            key_list.append(str(id))
+            window.localStorage.setItem("event_keys", str(key_list))
+            window.localStorage.setItem(str(id), json.dumps(out))
+        setup(current_month, current_year)
+        #Clear for all
+        event_create_name.value = ""
+        event_create_description.value = ""
+        return
 
 @when("click", "#event-delete-button")
-def delete_event():
-    if window.confirm("Are you sure you want to delete this event? \n This may also delete exact duplicate events."):
-        try:
-            events_file = open("events.txt", "r")
-            lines = events_file.readlines()
-            lineout = []
-            for line in lines:
-                event = json.loads(line)
-                if not (event["name"] == event_view_title.innerText and event["date"] == event_date_storage.innerText and event["description"] == event_view_description.innerText):
-                    lineout.append(line)
-            #wipes file *gasp*
-            events_file = open("events.txt", "w")
-            events_file.writelines(lineout)
-            events_file.close()
-            setup(current_month, current_year)
-        except FileNotFoundError:
-            window.alert("Did you delete the events file in your cache?")
-            #Impossible to actually get a FileNotFoundError here but just in case
+def delete_event(event):
+    event.stopPropagation()
+    if window.confirm("Are you sure you want to delete this event?"):
+        window.localStorage.removeItem(event_key_storage.innerText)
+        key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
+        key_list.remove(event_key_storage.innerText)
+        window.localStorage.setItem("event_keys", str(key_list))
+        setup(current_month, current_year)
+
+@when("click", "#event-edit-button")
+def edit_event(event):
+    event.stopPropagation()
+    day_modal.style.display = "flex"
+    day_modal.style.top = str(event_view_modal.style.top)
+    day_modal.style.left = str(event_view_modal.style.left)
+    event_view_modal.style.display = "none"
+    event_data = json.loads(window.localStorage.getItem(event_key_storage.innerText))
+    #Autofills
+    event_create_name.value = event_data["name"]
+    event_create_description.value = event_data["description"]
+    date_storage.innerText = event_data["date"]
+    date_list = event_data["date"].split("-")
+    day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
+    date_id_storage.innerText = event_key_storage.innerText
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)

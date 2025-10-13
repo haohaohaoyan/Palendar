@@ -1,6 +1,6 @@
 from pyscript import document, window, when
 from pyodide.ffi.wrappers import add_event_listener
-import datetime, calendar, json
+import datetime, calendar, json, random
 #no way there's literally an entire module dedicated to this *surprise*
 
 #Constants in caps
@@ -13,10 +13,15 @@ button_month_left = document.querySelector("#button-month-left")
 button_month_right = document.querySelector("#button-month-right")
 #Event create modal
 day_modal = document.querySelector(".day-modal")
-day_modal_title = document.querySelector(".day-modal > #title")
+day_modal_title = document.querySelector(".day-modal > .title")
 event_create_name = document.querySelector("#event-create-name")
 event_create_description = document.querySelector("#event-create-description")
 date_storage = document.querySelector("#day-storage")
+#Event view modal
+event_view_modal = document.querySelector(".event-view-modal")
+event_view_title = document.querySelector(".event-view-modal > .title")
+event_view_description = document.querySelector("#event-view-description")
+event_date_storage = document.querySelector("#event-date-storage")
 
 #variable
 current_month = datetime.date.today().month
@@ -33,6 +38,7 @@ def setup(month,year):
     current_year = year
     #Am i just bad at logic *kill me now*
     day_modal.style.display = "none"
+    event_view_modal.style.display = "none"
     index = 0
     after_index = 1
     for i in range(1,(calendar.weekday(year,month,1)+2)):
@@ -64,6 +70,8 @@ def setup(month,year):
     #add all event listeners
     for day in document.querySelectorAll(".calendar-day"):
         add_event_listener(day, "click", day_open_modal)
+    for event in document.querySelectorAll(".event"):
+        add_event_listener(event, "click", event_open_modal)
 
 def setup_wrapper(event):
     if event.currentTarget.id == button_month_left.id:
@@ -90,9 +98,20 @@ def day_open_modal(event):
     date_storage.innerText = event.currentTarget.id
     day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
 
-@when("click", ".day-modal > #close")
-def close_modal():
-    day_modal.style.display = "none"
+def event_open_modal(event):
+    #can't believe this actually works, thanks stackoverflow nerds
+    event.stopPropagation()
+    event_view_modal.style.display = "flex"
+    event_view_modal.style.top = str(event.clientY) + "px"
+    event_view_modal.style.left = str(event.clientX) + "px"
+    event_view_title.innerText = event.currentTarget.innerText
+    event_view_description.innerText = event.currentTarget.title
+    #For later
+    event_date_storage.innerText = event.currentTarget.parentNode.id
+
+@when("click", ".close")
+def close_modal(event):
+    event.currentTarget.parentNode.style.display = "none"
 
 @when("click", "#event-create-save")
 def save_event():
@@ -106,10 +125,9 @@ def save_event():
                 date = date_storage.innerText,
                 description = event_create_description.value,
             )
-            event_file.write("\n")
             json.dump(out, event_file)
-            #I have no clue how this below line makes it work, even while doing nothing. DON'T TOUCH IT.
-            event_file.readlines()
+            event_file.write("\n")
+            event_file.close()
             setup(current_month, current_year)
             #Clear
             event_create_name.value = ""
@@ -118,8 +136,28 @@ def save_event():
             pass
             #Not needed yet until localstorage implement
 
-setup(current_month, current_year)
+@when("click", "#event-delete-button")
+def delete_event():
+    if window.confirm("Are you sure you want to delete this event? \n This may also delete exact duplicate events."):
+        try:
+            events_file = open("events.txt", "r")
+            lines = events_file.readlines()
+            lineout = []
+            for line in lines:
+                event = json.loads(line)
+                if not (event["name"] == event_view_title.innerText and event["date"] == event_date_storage.innerText and event["description"] == event_view_description.innerText):
+                    lineout.append(line)
+            #wipes file *gasp*
+            events_file = open("events.txt", "w")
+            events_file.writelines(lineout)
+            events_file.close()
+            setup(current_month, current_year)
+        except FileNotFoundError:
+            window.alert("Did you delete the events file in your cache?")
+            #Impossible to actually get a FileNotFoundError here but just in case
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)
 add_event_listener(calendar_selector, "change", setup_wrapper)
+
+setup(current_month, current_year)

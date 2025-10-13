@@ -99,18 +99,17 @@
             top: 0;
             left: 0;
             width: 12vw;
-            height: 10vw;
             border: 2px solid black;
             background-color: white;
-            overflow-y: scroll;
+            padding: 5px;
         }
 
-        .day-modal > #close {
+        .close {
             position: absolute;
             top: 0;
             right: 0;
-            width: 10%;
-            height: 10%;
+            width: 20px;
+            height: 20px;
             border-style: none;
             background-color: white;
             text-align: center;
@@ -122,15 +121,49 @@
         }
 
         .day-modal > #event-create-description {
-            height: 140px;
+            height: 160px;
         }
 
         .day-modal > #event-create-color {
+            width: 50%;
+        }
+
+        #date-storage, #event-date-storage {
+            display: none;
+        }
+
+        .event-view-modal {
+            display: none;
+            position: fixed;
+            flex-direction: column;
+            top: 0;
+            left: 0;
+            width: 12vw;
+            border: 2px solid black;
+            background-color: white;
+            padding: 5px;
+        }
+
+        #event-view-description {
+            max-height: 160px;
+            overflow-y: scroll;
+            overflow-wrap: break-word;
+        }
+
+        .button-bar {
+            display: grid;
+            grid-template-columns: repeat(4,25%);
             width: 100%;
         }
 
-        #date-storage {
-            display: none;
+        #event-edit-button {
+            width: 100%;
+            grid-column: 1 / 3;
+        }
+        
+        #event-delete-button {
+            width: 100%;
+            grid-column: 3 / 5;
         }
     </style>
     <div class="calendar-main">
@@ -156,13 +189,23 @@
         </div>
         <div class="day-modal">
             <!--Currently all placeholder assets, not much styling-->
-            <button id="close" title="Close event creation modal">X</button>
-            <h4 id="title" title="Click on the day to put the event on"></h4>
+            <button class="close" title="Close event creation modal">X</button>
+            <h4 class="title" title="Click on the day to put the event on"></h4>
             <p id="date-storage"></p>
             <input placeholder="Name" id="event-create-name"/>
             <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
             <input type="color" id="event-create-color" placeholder="Color" title="Event color (optional)">
             <button id="event-create-save">Save</button>
+        </div>
+        <div class="event-view-modal">
+            <button class="close" title="Close event view modal">X</button>
+            <h4 class="title"></h4>
+            <p id="event-date-storage"></p>
+            <p id="event-view-description"></p>
+            <div class="button-bar">
+                <button id="event-edit-button">Edit</button>
+                <button id="event-delete-button">Delete</button>
+            </div>
         </div>
     </div>
     <script type="py" src="calendar-setup.py" config="files.json"></script>

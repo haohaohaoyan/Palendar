@@ -1,7 +1,10 @@
 from pyscript import document, window, when
 from pyodide.ffi.wrappers import add_event_listener
 import datetime, calendar, json, random, ast
-#no way there's literally an entire module dedicated to this *surprise*
+#oh, a calendar module that literally does what i need it to, yay
+#finally
+
+client = genai.Client("AIzaSyDOrOEgzvipA6zLiVIQ12_WKFijhN9AHF4")
 
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -36,7 +39,7 @@ current_year = datetime.date.today().year
 calendar.setfirstweekday(calendar.SUNDAY)
 
 def htmlReformat(string):
-    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;"))
+    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;")) #mikuu??????
 
 def setup(month,year):
     global current_month, current_year
@@ -217,6 +220,20 @@ def clear_localstorage():
         window.localStorage.clear()
         setup(current_month, current_year)
 
+@when("click", "#send-message-button")
+def send_message():
+    user_input = document.querySelector("#send-message").value
+    if user_input.strip() == "":
+        window.alert("Please enter a message.")
+        return
+    chat_div = document.querySelector("#chat")
+    chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
+    localstorage_list = []
+    for item in ast.literal_eval(window.localStorage.getItem("event_keys")):
+        localstorage_list.append(window.localStorage.getItem(item))
+    chat_div.innerHTML += "<p class='ai-message'> You said: " + str(localstorage_list) + "</p>"
+    document.querySelector("#send-message").value = ""
+    chat_div.scrollTop = chat_div.scrollHeight
 
 #On runtime functions
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"

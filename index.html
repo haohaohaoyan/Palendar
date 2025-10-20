@@ -20,6 +20,8 @@
         textarea {
             width: 100%;
         }
+
+        /*calendar main */
         
         .top-bar {
             display: flex; 
@@ -73,7 +75,6 @@
             min-height: 6vw;
             border: 2px solid black;
             color: black;
-            border-radius: 4px;
             overflow-wrap: break-word;
         }
 
@@ -96,6 +97,8 @@
             color: black;
             overflow-wrap: break-word;
         }
+
+        /*modals*/
 
         .day-modal {
             display: none;
@@ -175,6 +178,7 @@
             grid-column: 3 / 5;
         }
 
+        /* offcanvas tray and tabs */
         .offcanvas-tray {
             position: fixed;
             top: 0;
@@ -218,12 +222,46 @@
         .offcanvas-tab-content {
             display: none;
             padding: 10px;
-            height: 90%;
+            height: 95%;
         }
 
         #note-text {
             height: 100%;
             resize: none;
+        }
+
+        /* chatbot msgs */
+        #chat {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            overflow-y: scroll;
+            border: 1px solid gray;
+            padding: 10px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            text-align: right;
+            background-color: cornflowerblue;
+            margin: 5px 0px;
+            padding: 10px;
+            border-radius: 10px 10px 0 10px;
+            display: inline-block;
+            max-width: 80%;
+            hyphens: auto;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            text-align: left;
+            background-color: lightgray;
+            margin: 5px 0px;
+            padding: 10px;
+            border-radius: 10px 10px 10px 0;
+            display: inline-block;
+            max-width: 80%;
+            hyphens: auto;
         }
     </style>
     <!--Main calendar here-->
@@ -280,18 +318,20 @@
             <button class="offcanvas-tray-tab-button" id="offc-settings-button">Settings</button>
         </div>
         <div class="offcanvas-tab-content" id="offc-chatbot">
-            <p>placeholder placeholder</p>
-            <p>i guess you put a textarea here? this comes later</p>
-            <textarea></textarea>
+            <div id="chat">
+            </div>
+            <textarea id="send-message" placeholder="Ask the AI to make events for you"></textarea>
+            <button id="send-message-button">Send</button>
         </div>
         <div class="offcanvas-tab-content" id="offc-notes">
             <textarea id="note-text" placeholder="Write notes here"></textarea>
         </div>
         <div class="offcanvas-tab-content" id="offc-settings">
             <p>settings here</p>
+            <p>Will be putting alarm settings, that stuff ig</p>
             <button id="clear-localstorage">Clear all events</button>
         </div>
     </div>
-    <script type="py" src="calendar-setup.py"></script>
+    <script type="py" src="calendar-setup.py" config='{"packages":["google", "google-genai"]}'></script>
 </body>
 </html>

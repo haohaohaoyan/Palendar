@@ -4,8 +4,6 @@ import datetime, calendar, json, random, ast
 #oh, a calendar module that literally does what i need it to, yay
 #finally
 
-client = genai.Client("AIzaSyDOrOEgzvipA6zLiVIQ12_WKFijhN9AHF4")
-
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #Document objects

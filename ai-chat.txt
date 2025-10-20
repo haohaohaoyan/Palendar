@@ -1,0 +1,9 @@
+event lsitener send button
+    text = select innser text value
+    send text  to py file 
+    clear text box
+
+    agent response
+    get response from py file
+    display response in chat box
+    

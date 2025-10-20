@@ -3,6 +3,8 @@ from pyodide.ffi.wrappers import add_event_listener
 import datetime, calendar, json, random, ast
 #no way there's literally an entire module dedicated to this *surprise*
 
+#api key: AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI
+
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #Document objects

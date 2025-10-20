@@ -17,6 +17,12 @@
 </head>
 <body>
     <style>
+        textarea {
+            width: 100%;
+        }
+
+        /*calendar main */
+        
         .top-bar {
             display: flex; 
             flex-direction: row;
@@ -40,6 +46,7 @@
         .calendar-main {
             margin: auto;
             width: 70vw;
+            transition-duration: 0.5s;
         }
 
         #calendar-selector {
@@ -68,7 +75,6 @@
             min-height: 6vw;
             border: 2px solid black;
             color: black;
-            border-radius: 4px;
             overflow-wrap: break-word;
         }
 
@@ -91,6 +97,8 @@
             color: black;
             overflow-wrap: break-word;
         }
+
+        /*modals*/
 
         .day-modal {
             display: none;
@@ -150,6 +158,10 @@
             overflow-wrap: break-word;
         }
 
+        .event-view-modal > .title {
+            overflow-wrap: break-word
+        }
+
         .button-bar {
             display: grid;
             grid-template-columns: repeat(4,25%);
@@ -165,15 +177,102 @@
             width: 100%;
             grid-column: 3 / 5;
         }
+
+        /* offcanvas tray and tabs */
+        .offcanvas-tray {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20vw;
+            height: 100vh;
+            background-color: white;
+            border: 2px solid black;
+            transition-duration: 0.5s;
+        }
+
+        .offcanvas-tray-toggle {
+            position: absolute;
+            top: 10px;
+            right: -50px;
+            width: 40px;
+            height: 40px;
+            border-style: none;
+            border-radius: 10px;
+            background-color: rgba(0,0,0,0.3)
+        }
+
+        .offcanvas-tray-toggle:hover {
+            cursor: pointer;
+            background-color: rgba(0,0,0,0.5)
+        }
+
+        .offcanvas-tray-tabs {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .offcanvas-tray-tab-button {
+            width: 50%;
+            border-style: none;
+            background-color: lightgray;
+            font-size: 30px;
+        }
+
+        .offcanvas-tab-content {
+            display: none;
+            padding: 10px;
+            height: 95%;
+        }
+
+        #note-text {
+            height: 100%;
+            resize: none;
+        }
+
+        /* chatbot msgs */
+        #chat {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            overflow-y: scroll;
+            border: 1px solid gray;
+            padding: 10px;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            text-align: right;
+            background-color: cornflowerblue;
+            margin: 5px 0px;
+            padding: 10px;
+            border-radius: 10px 10px 0 10px;
+            display: inline-block;
+            max-width: 80%;
+            hyphens: auto;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            text-align: left;
+            background-color: lightgray;
+            margin: 5px 0px;
+            padding: 10px;
+            border-radius: 10px 10px 10px 0;
+            display: inline-block;
+            max-width: 80%;
+            hyphens: auto;
+        }
     </style>
+    <!--Main calendar here-->
     <div class="calendar-main">
         <div class="top-bar">
             <button id="button-month-left">
-                <
+                &lt;
             </button>
             <input type="month" id="calendar-selector"/>
             <button id="button-month-right">
-                >
+                &gt;
             </button>
         </div>
         <div id="calendar-weekdays">
@@ -189,7 +288,7 @@
         </div>
         <div class="day-modal">
             <!--Currently all placeholder assets, not much styling-->
-            <button class="close" title="Close event creation modal">X</button>
+            <button class="close" title="Close event creation modal">&times;</button>
             <h4 class="title" title="Click on the day to put the event on"></h4>
             <p id="date-storage"></p>
             <p id="date-id-storage"></p>
@@ -199,7 +298,7 @@
             <button id="event-create-save">Save</button>
         </div>
         <div class="event-view-modal">
-            <button class="close" title="Close event view modal">X</button>
+            <button class="close" title="Close event view modal">&times;</button>
             <h4 class="title"></h4>
             <p id="event-key-storage"></p>
             <p id="event-view-description"></p>
@@ -209,6 +308,30 @@
             </div>
         </div>
     </div>
-    <script type="py" src="calendar-setup.py"></script>
+    <!--Offcanvases below-->
+    <!--Tray, then tabs-->
+    <div class="offcanvas-tray" style="left:-20vw;">
+        <button class="offcanvas-tray-toggle">&gt;</button>
+        <div class="offcanvas-tray-tabs">
+            <button class="offcanvas-tray-tab-button" id="offc-chatbot-button">Chatbot</button>
+            <button class="offcanvas-tray-tab-button" id="offc-notes-button">Notes</button>
+            <button class="offcanvas-tray-tab-button" id="offc-settings-button">Settings</button>
+        </div>
+        <div class="offcanvas-tab-content" id="offc-chatbot">
+            <div id="chat">
+            </div>
+            <textarea id="send-message" placeholder="Ask the AI to make events for you"></textarea>
+            <button id="send-message-button">Send</button>
+        </div>
+        <div class="offcanvas-tab-content" id="offc-notes">
+            <textarea id="note-text" placeholder="Write notes here"></textarea>
+        </div>
+        <div class="offcanvas-tab-content" id="offc-settings">
+            <p>settings here</p>
+            <p>Will be putting alarm settings, that stuff ig</p>
+            <button id="clear-localstorage">Clear all events</button>
+        </div>
+    </div>
+    <script type="py" src="calendar-setup.py" config='{"packages":["google", "google-genai"]}'></script>
 </body>
 </html>

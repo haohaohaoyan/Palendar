@@ -1,14 +1,17 @@
 from pyscript import document, window, when
 from pyodide.ffi.wrappers import add_event_listener
-from pyodide.ffi import JsNull
 import datetime, calendar, json, random, ast
-#no way there's literally an entire module dedicated to this *surprise*
+#oh, a calendar module that literally does what i need it to, yay
+#finally
+
+#api key: AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI
 
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #Document objects
 #Calendar
 calendar_selector = document.querySelector("#calendar-selector")
+calendar_main = document.querySelector(".calendar-main")
 calendar_body = document.querySelector(".calendar-body")
 button_month_left = document.querySelector("#button-month-left")
 button_month_right = document.querySelector("#button-month-right")
@@ -24,6 +27,9 @@ event_view_modal = document.querySelector(".event-view-modal")
 event_view_title = document.querySelector(".event-view-modal > .title")
 event_view_description = document.querySelector("#event-view-description")
 event_key_storage = document.querySelector("#event-key-storage")
+#offcanvases
+offcanvas_tray = document.querySelector(".offcanvas-tray")
+offcanvas_tray_toggle = document.querySelector(".offcanvas-tray-toggle")
 
 #variable
 current_month = datetime.date.today().month
@@ -33,7 +39,7 @@ current_year = datetime.date.today().year
 calendar.setfirstweekday(calendar.SUNDAY)
 
 def htmlReformat(string):
-    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;"))
+    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;")) #mikuu??????
 
 def setup(month,year):
     global current_month, current_year
@@ -121,6 +127,24 @@ def event_open_modal(event):
     #For later
     event_key_storage.innerText = event.currentTarget.id
 
+def event_create(name: str, date: str, description: str, color: list, priority: int, change_id: str = ""):
+    out = dict(
+            name = htmlReformat(event_create_name.value), 
+            date = date_storage.innerText,
+            description = htmlReformat(event_create_description.value),
+        )
+    key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
+    if change_id != "":
+        window.localStorage.setItem(change_id, json.dumps(out))
+    else:
+        id=random.randint(100000,999999)
+        while id in key_list:
+            id=random.randint(100000,999999)
+        key_list.append(str(id))
+        window.localStorage.setItem("event_keys", str(key_list))
+        window.localStorage.setItem(str(id), json.dumps(out))
+    setup(current_month, current_year)
+
 @when("click", ".close")
 def close_modal(event):
     event.currentTarget.parentNode.style.display = "none"
@@ -130,24 +154,7 @@ def save_event():
     if event_create_name.value == "":
         window.alert("No name for event!")
     else:
-        out = dict(
-            name = htmlReformat(event_create_name.value), 
-            date = date_storage.innerText,
-            description = htmlReformat(event_create_description.value),
-        )
-        if date_id_storage.innerText != "":
-            #Only filled when editing, otherwise blank as per the day_open_modal function
-            window.localStorage.setItem(date_id_storage.innerText, json.dumps(out))
-        else:
-            #Random 6-digit number for ids, prevents duplicate operations
-            key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
-            id=random.randint(100000,999999)
-            while id in key_list:
-                id=random.randint(100000,999999)
-            key_list.append(str(id))
-            window.localStorage.setItem("event_keys", str(key_list))
-            window.localStorage.setItem(str(id), json.dumps(out))
-        setup(current_month, current_year)
+        event_create(event_create_name.value, date_storage.innerText, event_create_description.value, [], 0, date_id_storage.innerText)
         #Clear for all
         event_create_name.value = ""
         event_create_description.value = ""
@@ -178,6 +185,61 @@ def edit_event(event):
     date_list = event_data["date"].split("-")
     day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
     date_id_storage.innerText = event_key_storage.innerText
+
+#Yeah great shove ALL offcanvas things here
+
+@when("click", ".offcanvas-tray-toggle")
+def toggle_offcanvas():
+    if offcanvas_tray.style.left == "0px":
+        offcanvas_tray.style.left = "-20vw"
+        offcanvas_tray_toggle.innerText = ">"
+        calendar_main.style.width = "70vw"
+    elif offcanvas_tray.style.left == "-20vw":
+        offcanvas_tray.style.left = "0px"
+        offcanvas_tray_toggle.innerText = "<"
+        calendar_main.style.width = "50vw"
+    #I don't know how changing width works but margin doesn't. At least they have the same outcome. I'm suspecting it's due to a combination of auto margin and width squeezing
+
+@when("click", ".offcanvas-tray-tab-button")
+def switch_offcanvas_tab(event):
+    #Hide/switch all off first, then use event to find which to show
+    for tab in document.querySelectorAll(".offcanvas-tab-content"):
+        tab.style.display = "none"
+    for tab_button in document.querySelectorAll(".offcanvas-tray-tab-button"):
+        tab_button.style.backgroundColor = "lightgray"
+    document.querySelector("#" + event.currentTarget.id.replace("-button", "")).style.display = "block"
+    document.querySelector("#" + event.currentTarget.id).style.backgroundColor = "white"
+
+@when("change", "#note-text")
+def save_notes(event):
+    window.localStorage.setItem("user_notes", event.currentTarget.value)
+
+@when("click", "#clear-localstorage")
+def clear_localstorage():
+    if window.confirm("Are you sure you want to clear all events? This action cannot be undone."):
+        window.localStorage.clear()
+        setup(current_month, current_year)
+
+@when("click", "#send-message-button")
+def send_message():
+    user_input = document.querySelector("#send-message").value
+    if user_input.strip() == "":
+        window.alert("Please enter a message.")
+        return
+    chat_div = document.querySelector("#chat")
+    chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
+    localstorage_list = []
+    for item in ast.literal_eval(window.localStorage.getItem("event_keys")):
+        localstorage_list.append(window.localStorage.getItem(item))
+    chat_div.innerHTML += "<p class='ai-message'> You said: " + str(localstorage_list) + "</p>"
+    document.querySelector("#send-message").value = ""
+    chat_div.scrollTop = chat_div.scrollHeight
+
+#On runtime functions
+document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
+document.querySelector("#offc-chatbot").style.display = "block"
+if window.localStorage.getItem("user_notes") is not None:
+    document.querySelector("#note-text").value = window.localStorage.getItem("user_notes")
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)

@@ -1,7 +1,8 @@
 from pyscript import document, window, when
-from pyodide.ffi.wrappers import add_event_listener
+from pyodide.ffi.wrappers import add_event_listener, create_proxy
 import datetime, calendar, json, random, ast
 #oh, a calendar module that literally does what i need it to, yay
+from pyscript.js_modules import genai_bot
 #finally
 
 #api key: AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI
@@ -35,11 +36,8 @@ offcanvas_tray_toggle = document.querySelector(".offcanvas-tray-toggle")
 current_month = datetime.date.today().month
 current_year = datetime.date.today().year
 
-#Set first weekday from Mon to Sun
-calendar.setfirstweekday(calendar.SUNDAY)
-
 def htmlReformat(string):
-    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;")) #mikuu??????
+    return str(string.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;").replace('"',"&quot;").replace("'", "&#39;")) # hatsune miku??????
 
 def setup(month,year):
     global current_month, current_year
@@ -127,11 +125,11 @@ def event_open_modal(event):
     #For later
     event_key_storage.innerText = event.currentTarget.id
 
-def event_create(name: str, date: str, description: str, color: list, priority: int, change_id: str = ""):
+def event_create(name: str, date: str, description: str, color: str = "", priority: int = 0, change_id: str = ""):
     out = dict(
-            name = htmlReformat(event_create_name.value), 
-            date = date_storage.innerText,
-            description = htmlReformat(event_create_description.value),
+            name = htmlReformat(name), 
+            date = date,
+            description = htmlReformat(description),
         )
     key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
     if change_id != "":
@@ -220,22 +218,63 @@ def clear_localstorage():
         window.localStorage.clear()
         setup(current_month, current_year)
 
+#Ai constants shoved here
+#i literally have no clue how to do these things. thanks, gemini docs.
+create_event_args = {
+    "name": "event_create",
+    "description": "Creates a single-day calendar event with name and description and saves it to localstorage.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "description": "Name of the event being created."
+            },
+            "date": {
+                "type": "string",
+                "description": "Date of event. Format: 'dDD-MM-YYYY', e.g. 'd05-09-2023'",
+            },
+            "description": {
+                "type": "string",
+                "description": "Description of the event being created. "
+            }
+        },
+        "required": ["name", "date"]
+    }
+}
+
 @when("click", "#send-message-button")
-def send_message():
+async def send_message():
     user_input = document.querySelector("#send-message").value
     if user_input.strip() == "":
         window.alert("Please enter a message.")
         return
     chat_div = document.querySelector("#chat")
     chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
-    localstorage_list = []
-    for item in ast.literal_eval(window.localStorage.getItem("event_keys")):
-        localstorage_list.append(window.localStorage.getItem(item))
-    chat_div.innerHTML += "<p class='ai-message'> You said: " + str(localstorage_list) + "</p>"
     document.querySelector("#send-message").value = ""
+    #Create response
+    response = await genai_bot.bot.models.generateContent(
+        model = "gemini-2.5-flash",
+        contents = str(user_input) + ". Context information: today is " + str(datetime.date.today()),
+        config = {
+            "tools": [{
+                "functionDeclaration": [create_event_args]
+                #Intentionally misspelled *it's actually "functionDeclarations" but it breaks when I try
+            }]
+       }
+    )
+    chat_div.innerHTML += "<p class='ai-message'>" + response.text + "</p>"
+    #Function running
+    if response.functionCalls.length != 0:
+        window.console.log(str(response.functionCalls[0].args))
+    window.console.log(str(response.functionCalls))
     chat_div.scrollTop = chat_div.scrollHeight
 
 #On runtime functions
+
+#Set first weekday from Mon to Sun
+calendar.setfirstweekday(calendar.SUNDAY)
+
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
 document.querySelector("#offc-chatbot").style.display = "block"
 if window.localStorage.getItem("user_notes") is not None:

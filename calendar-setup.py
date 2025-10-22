@@ -1,5 +1,5 @@
 from pyscript import document, window, when
-from pyodide.ffi.wrappers import add_event_listener, create_proxy
+from pyodide.ffi.wrappers import add_event_listener
 import datetime, calendar, json, random, ast
 #oh, a calendar module that literally does what i need it to, yay
 from pyscript.js_modules import genai_bot
@@ -125,7 +125,7 @@ def event_open_modal(event):
     #For later
     event_key_storage.innerText = event.currentTarget.id
 
-def event_create(name: str, date: str, description: str, color: str = "", priority: int = 0, change_id: str = ""):
+def event_create(name: str, date: str, description: str = "", color: str = "", priority: int = 0, change_id: str = ""):
     out = dict(
             name = htmlReformat(name), 
             date = date,
@@ -220,28 +220,7 @@ def clear_localstorage():
 
 #Ai constants shoved here
 #i literally have no clue how to do these things. thanks, gemini docs.
-create_event_args = {
-    "name": "event_create",
-    "description": "Creates a single-day calendar event with name and description and saves it to localstorage.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string",
-                "description": "Name of the event being created."
-            },
-            "date": {
-                "type": "string",
-                "description": "Date of event. Format: 'dDD-MM-YYYY', e.g. 'd05-09-2023'",
-            },
-            "description": {
-                "type": "string",
-                "description": "Description of the event being created. "
-            }
-        },
-        "required": ["name", "date"]
-    }
-}
+
 
 @when("click", "#send-message-button")
 async def send_message():
@@ -253,21 +232,17 @@ async def send_message():
     chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
     document.querySelector("#send-message").value = ""
     #Create response
-    response = await genai_bot.bot.models.generateContent(
-        model = "gemini-2.5-flash",
-        contents = str(user_input) + ". Context information: today is " + str(datetime.date.today()),
-        config = {
-            "tools": [{
-                "functionDeclaration": [create_event_args]
-                #Intentionally misspelled *it's actually "functionDeclarations" but it breaks when I try
-            }]
-       }
-    )
-    chat_div.innerHTML += "<p class='ai-message'>" + response.text + "</p>"
+    await genai_bot.generate(str(user_input))
+    response = genai_bot.get_response()
+    if not response.text:
+        chat_div.innerHTML += "<p class='ai-message'>Working...</p>"
+    else: 
+        chat_div.innerHTML += "<p class='ai-message'>" + response.text + "</p>"
     #Function running
-    if response.functionCalls.length != 0:
-        window.console.log(str(response.functionCalls[0].args))
-    window.console.log(str(response.functionCalls))
+    if response.functionCalls:
+        if len(response.functionCalls) != 0:
+            for function in response.functionCalls:
+                event_create(function.args.name, function.args.date, function.args.description)
     chat_div.scrollTop = chat_div.scrollHeight
 
 #On runtime functions

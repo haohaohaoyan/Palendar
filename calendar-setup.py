@@ -12,6 +12,7 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July", "Augus
 #Document objects
 #Calendar
 calendar_selector = document.querySelector("#calendar-selector")
+month_select_modal = document.querySelector("#month-select-modal")
 calendar_main = document.querySelector(".calendar-main")
 calendar_body = document.querySelector(".calendar-body")
 button_month_left = document.querySelector("#button-month-left")
@@ -42,29 +43,25 @@ def htmlReformat(string):
 def setup(month,year):
     global current_month, current_year
     calendar_body.innerHTML = ""
-    calendar_selector.value = str(year) + "-" + str(month).zfill(2)
+    calendar_selector.innerText = str(MONTHS[int(month)-1]) + " " + str(year)
     current_month, current_year = month, year
     #Am i just bad at logic *kill me now*
     day_modal.style.display = "none"
     event_view_modal.style.display = "none"
     index = 0
-    after_index = 1
     for i in range(1,(calendar.weekday(year,month,1)+2)):
         #+2 because 1 for the range exclusion and 1 for pushing the index from 0
-        calendar_body.innerHTML += "<div class='calendar-day calendar-day--past'>" + str(i) + "</div>"
+        calendar_body.innerHTML += "<div class='calendar-day-past'></div>"
         index += 1
     for i in range(1,calendar.monthrange(year,month)[1]+1):
         calendar_body.innerHTML += "<div class='calendar-day' id=d" + str(i).zfill(2) + "-" + str(month).zfill(2) + "-" + str(year) + ">" + str(i) + "</div>"
         index += 1
     while index % 7 != 0:
-        calendar_body.innerHTML += "<div class='calendar-day calendar-day--past'>" + str(after_index) + "</div>"
+        calendar_body.innerHTML += "<div class='calendar-day-past'></div>"
         index += 1
-        after_index += 1
     #find current date and highlight hhhggkghkgkhghkghkg
-    document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day calendar-day--today"
-    #put events loader here ig
-    #Logic: First key is a list of existing event keys. All afterwards are events in dict form, upon creation checks if random id is already in use, if so regenerate
-    #gee i sure do hate having to deal with all these edge cases
+    document.querySelector("#d" + str(datetime.date.today().day).zfill(2) + "-" + str(datetime.date.today().month).zfill(2) + "-" + str(datetime.date.today().year).zfill(2)).className = "calendar-day today"
+    #load events
     try:
         key_list = ast.literal_eval(window.localStorage.getItem("event_keys"))
     except ValueError:
@@ -83,7 +80,8 @@ def setup(month,year):
                 pass
     #add all event listeners
     for day in document.querySelectorAll(".calendar-day"):
-        add_event_listener(day, "click", day_open_modal)
+        if ".calendar-day--past" not in day.classList:
+            add_event_listener(day, "click", day_open_modal)
     for event in document.querySelectorAll(".event"):
         add_event_listener(event, "click", event_open_modal)
 
@@ -103,16 +101,34 @@ def setup_wrapper(event):
     if event.currentTarget.id == calendar_selector.id:
         setup(int(event.currentTarget.value.split("-")[1]), int(event.currentTarget.value.split("-")[0]))
 
+@when("click", "#calendar-selector")
+def open_month_select(event):
+    month_select_modal.style.display = "flex"
+    document.querySelector("#select-month").value = current_month
+    document.querySelector("#select-year").value = current_year
+
+@when("click", "#confirm-month-select")
+def close_month_select():
+    month_select_modal.style.display = "none"
+    try:
+        setup(int(document.querySelector("#select-month").value), int(document.querySelector("#select-year").value))
+    except ValueError:
+        pass
+        #Doing nothing resets the field
+
 def day_open_modal(event):
-    day_modal.style.display = "flex"
-    day_modal.style.top = str(event.clientY) + "px"
-    day_modal.style.left = str(event.clientX) + "px"
-    date_list = event.currentTarget.id.split("-")
-    #For later
-    date_storage.innerText = event.currentTarget.id
-    date_id_storage.innerText = ""
-    #Empty to differentiate between creating and editing
-    day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
+    try:
+        day_modal.style.display = "flex"
+        day_modal.style.top = str(event.clientY) + "px"
+        day_modal.style.left = str(event.clientX) + "px"
+        date_list = event.currentTarget.id.split("-")
+        #For later
+        date_storage.innerText = event.currentTarget.id
+        date_id_storage.innerText = ""
+        #Empty to differentiate between creating and editing
+        day_modal_title.innerText = MONTHS[int(date_list[1])-1] + " " + date_list[0].lstrip("d0") + ", " + date_list[2]
+    except IndexError:
+        pass
 
 def event_open_modal(event):
     #can't believe this actually works, thanks stackoverflow nerds
@@ -191,12 +207,11 @@ def toggle_offcanvas():
     if offcanvas_tray.style.left == "0px":
         offcanvas_tray.style.left = "-20vw"
         offcanvas_tray_toggle.innerText = ">"
-        calendar_main.style.width = "70vw"
+        calendar_main.style.marginLeft = "calc(50% - 35vw)"
     elif offcanvas_tray.style.left == "-20vw":
         offcanvas_tray.style.left = "0px"
         offcanvas_tray_toggle.innerText = "<"
-        calendar_main.style.width = "50vw"
-    #I don't know how changing width works but margin doesn't. At least they have the same outcome. I'm suspecting it's due to a combination of auto margin and width squeezing
+        calendar_main.style.marginLeft = "22vw"
 
 @when("click", ".offcanvas-tray-tab-button")
 def switch_offcanvas_tab(event):
@@ -218,10 +233,6 @@ def clear_localstorage():
         window.localStorage.clear()
         setup(current_month, current_year)
 
-#Ai constants shoved here
-#i literally have no clue how to do these things. thanks, gemini docs.
-
-
 @when("click", "#send-message-button")
 async def send_message():
     user_input = document.querySelector("#send-message").value
@@ -235,18 +246,16 @@ async def send_message():
     await genai_bot.generate(str(user_input))
     response = genai_bot.get_response()
     if not response.text:
-        chat_div.innerHTML += "<p class='ai-message'>Working...</p>"
+        chat_div.innerHTML += "<p class='ai-message'>Done!</p>"
     else: 
         chat_div.innerHTML += "<p class='ai-message'>" + response.text + "</p>"
     #Function running
     if response.functionCalls:
-        if len(response.functionCalls) != 0:
-            for function in response.functionCalls:
-                event_create(function.args.name, function.args.date, function.args.description)
+        for function in response.functionCalls:
+            event_create(function.args.name, function.args.date, function.args.description)
     chat_div.scrollTop = chat_div.scrollHeight
 
 #On runtime functions
-
 #Set first weekday from Mon to Sun
 calendar.setfirstweekday(calendar.SUNDAY)
 

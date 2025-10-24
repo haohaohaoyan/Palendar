@@ -1,6 +1,7 @@
 import { GoogleGenAI, Type } from 'https://cdn.jsdelivr.net/npm/@google/genai@1.25.0/+esm'
 
 var response = "wow empty"
+const current_date = new Date()
 
 var create_event_args = {
     "name": "event_create",
@@ -18,7 +19,7 @@ var create_event_args = {
             },
             "description": {
                 "type": Type.STRING,
-                "description": "Description of the event being created. "
+                "description": "Description of the event being created, preferably with details and notes. Please generate one if not specified by user."
             }
         },
         "required": ["name", "date", "description"]
@@ -29,6 +30,16 @@ export const bot = new GoogleGenAI({
     apiKey: 'AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI'
     });
 
+function get_events() {
+    let event_list = JSON.parse(window.localStorage.getItem("event_keys").replaceAll("'", '"'))
+    var event_return = []
+    for (let index = 0; index < event_list.length; index++) {
+        const element = event_list[index];
+        event_return.push(window.localStorage.getItem(element))
+    };
+    return event_return
+}
+
 export async function generate(prompt) {
     response = await bot.models.generateContent({
         model: "gemini-2.5-flash",
@@ -36,7 +47,8 @@ export async function generate(prompt) {
         config: {
             tools: [{
                 functionDeclarations: [create_event_args]
-            }]
+            }],
+            systemInstruction: `Current date is d${current_date.toDateString()}. Already existing events are ${get_events()}. Always include a text response.`
         },
     })
 }
@@ -45,4 +57,4 @@ export function get_response() {
     return response
 }
 //I have literally no clue how to write JS. This thing is written with lots of help from the web. Its only purpose is to be imported by calendar-setup.py to provide access to the Gemini API via Pyodide.
-//Horrible programming, I know. However, pydantic is allergic to running google-genai in python, and trying to install pydantic just blows everything up.
+//Horrible programming, I know. However, pydantic is allergic to running google-genai in python, and trying to install pydantic-ai just blows everything up.

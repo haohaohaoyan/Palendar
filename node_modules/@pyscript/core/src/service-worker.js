@@ -1,1 +1,0 @@
-import "polyscript/service-worker";

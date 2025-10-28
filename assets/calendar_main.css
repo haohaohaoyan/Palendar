@@ -2,10 +2,11 @@
         
 .top-bar {
     display: grid;
-    grid-template-columns: auto 20em auto;
+    grid-template-columns: auto 30em auto;
     height: 2em;
     width: 100%;
     text-align: center;
+    justify-items: center;
     margin: auto;
     margin-bottom: 10px;
 }
@@ -172,5 +173,5 @@
     grid-column: 2/3;
     grid-row: 1/2;
     flex-direction: row;
-    width: 10em;
+    width: 100%;
 }

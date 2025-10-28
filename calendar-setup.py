@@ -32,6 +32,7 @@ event_key_storage = document.querySelector("#event-key-storage")
 #offcanvases
 offcanvas_tray = document.querySelector(".offcanvas-tray")
 offcanvas_tray_toggle = document.querySelector(".offcanvas-tray-toggle")
+notification_button = document.querySelector("#toggle-notifications")
 
 #variable
 current_month = datetime.date.today().month
@@ -163,6 +164,12 @@ def event_create(name: str, date: str, description: str = "", color: str = "", p
 def close_modal(event):
     event.currentTarget.parentNode.style.display = "none"
 
+#no multi decorators, am i just stupid? event listener down below instead
+def drag_modal(event):
+    target = event.currentTarget
+    target.style.top = str(event.clientY) + "px"
+    target.style.left = str(event.clientX) + "px"
+
 @when("click", "#event-create-save")
 def save_event():
     if event_create_name.value == "":
@@ -204,6 +211,8 @@ def edit_event(event):
 
 @when("click", ".offcanvas-tray-toggle")
 def toggle_offcanvas():
+    day_modal.style.display = "none"
+    event_view_modal.style.display = "none"
     if offcanvas_tray.style.left == "0px":
         offcanvas_tray.style.left = "-20vw"
         offcanvas_tray_toggle.innerText = ">"
@@ -219,7 +228,7 @@ def switch_offcanvas_tab(event):
     for tab in document.querySelectorAll(".offcanvas-tab-content"):
         tab.style.display = "none"
     for tab_button in document.querySelectorAll(".offcanvas-tray-tab-button"):
-        tab_button.style.backgroundColor = "lightgray"
+        tab_button.style.backgroundColor = "cornflowerblue"
     document.querySelector("#" + event.currentTarget.id.replace("-button", "")).style.display = "block"
     document.querySelector("#" + event.currentTarget.id).style.backgroundColor = "white"
 
@@ -241,6 +250,7 @@ async def send_message():
         return
     chat_div = document.querySelector("#chat")
     chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
+    chat_div.scrollTop = chat_div.scrollHeight
     document.querySelector("#send-message").value = ""
     #Create response
     await genai_bot.generate(str(user_input))
@@ -255,17 +265,47 @@ async def send_message():
             event_create(function.args.name, function.args.date, function.args.description)
     chat_div.scrollTop = chat_div.scrollHeight
 
+#Running notifications
+@when("click", "#toggle-notifications")
+def toggle_notifications(event):
+    genai_bot.notification.requestPermission()
+    window.localStorage.setItem("notification_toggle", notification_button.checked)
+    window.alert("Please reload for changes to take effect.")
+
+@when("click", "#sendnotiftest")
+def send_notification():
+    genai_bot.notification_send()
+
+@when("change", "#notif-set-time")
+def set_time():
+    window.localStorage.setItem("notification_time", document.querySelector("#notif-set-time").value)
+    current_date = datetime.date.today().da
+    new_time = document.querySelector("#notif-set-time").value.split(":")
+    #horrible conditional logic bc I don't know if there's a preexisting method to check next time at time
+    #not done yet :P
+
 #On runtime functions
 #Set first weekday from Mon to Sun
 calendar.setfirstweekday(calendar.SUNDAY)
+
+#Set favicon (hehe)
+document.querySelector("#favicon").href = "assets/palendar-favico/palendar-favico-" + str(datetime.date.today().day).zfill(2) + ".png"
 
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
 document.querySelector("#offc-chatbot").style.display = "block"
 if window.localStorage.getItem("user_notes") is not None:
     document.querySelector("#note-text").value = window.localStorage.getItem("user_notes")
+if window.localStorage.getItem("notification_toggle") is not None:
+    notification_button.checked = True if window.localStorage.getItem("notification_toggle") == "true" else False
+    if window.localStorage.getItem("notification_toggle") == "on":
+        genai_bot.notification_send()
+if window.localStorage.getItem("notification_time") is not None:
+    document.querySelector("#notif-set-time").value = window.localStorage.getItem("notification_time")
 
 add_event_listener(button_month_left, "click", setup_wrapper)
 add_event_listener(button_month_right, "click", setup_wrapper)
 add_event_listener(calendar_selector, "change", setup_wrapper)
+add_event_listener(event_view_modal, "dragend", drag_modal)
+add_event_listener(day_modal, "dragend", drag_modal)
 
 setup(current_month, current_year)

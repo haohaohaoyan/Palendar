@@ -12,13 +12,33 @@
     <link rel="stylesheet" href="https://pyscript.net/releases/2025.10.1/core.css" />
     <script type="module" src="https://pyscript.net/releases/2025.10.1/core.js"></script>
 
-    <!-- Linked CSS -->
+    <!-- CSS, assets -->
     <link rel="stylesheet" href="assets/calendar_main.css">
+    <link id="favicon" rel="icon" href="assets/palendar-favico/palendar-favico-32.png">
 </head>
 <body>
     <style>
         textarea {
             width: 100%;
+            padding: 5px;
+            height: max-content;
+            resize: none;
+        }
+
+        select, input, textarea {
+            padding: 5px;
+            border: solid 1px black;
+            border-radius: 0;
+        }
+
+        button {
+            width: 100%;
+            background-color: cornflowerblue;
+            border: outset 4px cornflowerblue;
+        }
+
+        .note {
+            color: rgba(0,0,0,0.4)
         }
 
         /* offcanvas tray and tabs */
@@ -41,7 +61,7 @@
             height: 40px;
             border-style: none;
             border-radius: 10px;
-            background-color: rgba(0,0,0,0.3)
+            background-color: cornflowerblue;
         }
 
         .offcanvas-tray-toggle:hover {
@@ -58,7 +78,8 @@
         .offcanvas-tray-tab-button {
             width: 50%;
             border-style: none;
-            background-color: lightgray;
+            border-radius: 0;
+            background-color: cornflowerblue;
             font-size: 30px;
         }
 
@@ -128,9 +149,7 @@
                         <option value="12">December</option>
                     </select>
                     <input placeholder="Year" id="select-year"></input>
-                    <button id="confirm-month-select">
-                        &check;
-                    </button>
+                    <button id="confirm-month-select">Confirm</button>
                 </div>
             <button id="button-month-right" title="Go forth a month">&gt;</button>
         </div>
@@ -145,7 +164,7 @@
         </div>
         <div class="calendar-body">
         </div>
-        <div class="day-modal">
+        <div class="day-modal" draggable=true>
             <!--Currently all placeholder assets, not much styling-->
             <button class="close" title="Close event creation modal">&times;</button>
             <h4 class="title" title="Click on the day to put the event on"></h4>
@@ -155,7 +174,7 @@
             <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
             <button id="event-create-save">Save</button>
         </div>
-        <div class="event-view-modal">
+        <div class="event-view-modal" draggable=true>
             <button class="close" title="Close event view modal">&times;</button>
             <h4 class="title"></h4>
             <p id="event-key-storage"></p>
@@ -179,7 +198,8 @@
             <div id="chat">
             </div>
             <textarea id="send-message" placeholder="Ask the AI to make events for you"></textarea>
-            <button id="send-message-button">Send</button>
+            <button id="send-message-button">&#x2191; Send</button>
+            <p class="note">I'm sorry, but the AI doesn't have any memory yet, due to issues that can't be fixed with our timeframe. Please specify date and name all in the same prompt. - haoyan</p>
         </div>
         <div class="offcanvas-tab-content" id="offc-notes">
             <textarea id="note-text" placeholder="Write notes here"></textarea>
@@ -187,6 +207,12 @@
         <div class="offcanvas-tab-content" id="offc-settings">
             <p>settings here</p>
             <p>Will be putting alarm settings, that stuff ig</p>
+            <!-- <input type="checkbox" id="toggle-notifications"/>
+            <label for="toggle-notifications">Reminder notifications</label>
+            <button id="sendnotiftest">send test</button>
+            <input type="time" id="notif-set-time"/>
+            <label for="notif-set-time">Set time for notification</label> -->
+            <!--No time now.-->
             <button id="clear-localstorage">Clear all events</button>
         </div>
     </div>

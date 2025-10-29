@@ -116,6 +116,10 @@
     width: 100%;
 }
 
+.day-modal, .event-view-modal {
+    cursor: move;
+}
+
 .day-modal {
     display: none;
     position: fixed;

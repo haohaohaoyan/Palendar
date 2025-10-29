@@ -52,7 +52,7 @@ export async function generate(prompt) {
             tools: [{
                 functionDeclarations: [create_event_args]
             }],
-            systemInstruction: `Current date is d${current_date.toDateString()}. If the user asks about already existing events, they are ${get_events()}. Dates are formatted as "dDD-MM-YYYY", and please reformat appropriately.`
+            systemInstruction: `Current date is d${current_date.toDateString()}. Current events are ${get_events()}. Dates are formatted as "dDD-MM-YYYY", and please reformat appropriately. Do not use markdown text.`
         },
     })
     return
@@ -78,15 +78,21 @@ export async function notification_create() {
 
 export async function notification_send() {
     //why why why
-    let set_date = localStorage.getItem("notification_time").split(":")
+    var current_date = new Date()
+    var nextnotif = new Date(localStorage.getItem("next_notif"))
     if (Notification.permission == "granted" && localStorage.getItem("notification_toggle") == "true") {
         //System: sets expected next time of sending, when it passes, sends notification and ascends by a day
         //gonna do this laterojiojfiojfiojeioj;fioej;feijow;feijow;
-        if (current_date.getHours() == set_date[0] && current_date.getMinutes() == set_date[1]) {
+        if (current_date.valueOf() >= nextnotif.valueOf()) {
             notification_create()
+            nextnotif.setDate(current_date.getDate()+1)
+            localStorage.setItem("next_notif", nextnotif)
             }
         }
-        setTimeout(notification_send, 1200000)
+        setTimeout(notification_send, 1800000)
+        //every half hour
     }
 //I have literally no clue how to write JS. This thing is written with lots of help from the web. Its only purpose is to be imported by calendar-setup.py to provide access to the Gemini API via Pyodide.
 //Horrible programming, I know. However, pydantic is allergic to running google-genai in python, and trying to install pydantic-ai just blows everything up.
+
+notification_send()

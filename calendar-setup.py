@@ -214,13 +214,13 @@ def toggle_offcanvas():
     day_modal.style.display = "none"
     event_view_modal.style.display = "none"
     if offcanvas_tray.style.left == "0px":
-        offcanvas_tray.style.left = "-20vw"
+        offcanvas_tray.style.left = "-25vw"
         offcanvas_tray_toggle.innerText = ">"
         calendar_main.style.marginLeft = "calc(50% - 35vw)"
-    elif offcanvas_tray.style.left == "-20vw":
+    elif offcanvas_tray.style.left == "-25vw":
         offcanvas_tray.style.left = "0px"
         offcanvas_tray_toggle.innerText = "<"
-        calendar_main.style.marginLeft = "22vw"
+        calendar_main.style.marginLeft = "27vw"
 
 @when("click", ".offcanvas-tray-tab-button")
 def switch_offcanvas_tab(event):
@@ -272,17 +272,12 @@ def toggle_notifications(event):
     window.localStorage.setItem("notification_toggle", notification_button.checked)
     window.alert("Please reload for changes to take effect.")
 
-@when("click", "#sendnotiftest")
-def send_notification():
-    genai_bot.notification_send()
-
 @when("change", "#notif-set-time")
 def set_time():
+    current_date = datetime.datetime.now()
     window.localStorage.setItem("notification_time", document.querySelector("#notif-set-time").value)
-    current_date = datetime.date.today().da
-    new_time = document.querySelector("#notif-set-time").value.split(":")
-    #horrible conditional logic bc I don't know if there's a preexisting method to check next time at time
-    #not done yet :P
+    set_date = document.querySelector("#notif-set-time").value.split(":")
+    window.localStorage.setItem("next_notif", datetime.datetime(current_date.year, current_date.month, current_date.day + 1, int(set_date[0]), int(set_date[1])))
 
 #On runtime functions
 #Set first weekday from Mon to Sun
@@ -290,6 +285,9 @@ calendar.setfirstweekday(calendar.SUNDAY)
 
 #Set favicon (hehe)
 document.querySelector("#favicon").href = "assets/palendar-favico/palendar-favico-" + str(datetime.date.today().day).zfill(2) + ".png"
+
+#before everything else: welcome
+
 
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
 document.querySelector("#offc-chatbot").style.display = "block"

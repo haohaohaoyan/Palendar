@@ -251,6 +251,7 @@ async def send_message():
     chat_div = document.querySelector("#chat")
     chat_div.innerHTML += "<p class='user-message'>" + htmlReformat(user_input) + "</p>"
     chat_div.scrollTop = chat_div.scrollHeight
+    document.querySelector("#spinner-ai").style.display = "flex"
     document.querySelector("#send-message").value = ""
     #Create response
     await genai_bot.generate(str(user_input))
@@ -259,6 +260,7 @@ async def send_message():
         chat_div.innerHTML += "<p class='ai-message'>Done!</p>"
     else: 
         chat_div.innerHTML += "<p class='ai-message'>" + response.text + "</p>"
+    document.querySelector("#spinner-ai").style.display = "none"
     #Function running
     if response.functionCalls:
         for function in response.functionCalls:
@@ -285,9 +287,12 @@ calendar.setfirstweekday(calendar.SUNDAY)
 
 #Set favicon (hehe)
 document.querySelector("#favicon").href = "assets/palendar-favico/palendar-favico-" + str(datetime.date.today().day).zfill(2) + ".png"
+#remove loader
+document.querySelector(".spinner-border").style.display = "none"
 
 #before everything else: welcome
-
+if window.localStorage.length == 0:
+    window.alert("Hi! Welcome to Palendar. Create events by clicking on dates. Open the menu with the button on the top left. Please report all issues to our Github page!")
 
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
 document.querySelector("#offc-chatbot").style.display = "block"

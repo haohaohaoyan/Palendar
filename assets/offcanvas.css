@@ -1,0 +1,132 @@
+textarea {
+    width: 100%;
+    padding: 5px;
+    height: max-content;
+    resize: none;
+}
+
+select, input, textarea {
+    padding: 5px;
+    border: solid 1px black;
+    border-radius: 0;
+}
+
+button {
+    width: 100%;
+    background-color: cornflowerblue;
+    border: outset 4px cornflowerblue;
+}
+
+.note {
+    color: rgba(0,0,0,0.4)
+}
+
+/* offcanvas tray and tabs */
+.offcanvas-tray {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25vw;
+    height: 100vh;
+    background-color: white;
+    border: 2px solid black;
+    transition-duration: 0.5s;
+}
+
+.offcanvas-tray-toggle {
+    position: absolute;
+    top: 10px;
+    right: -50px;
+    width: 40px;
+    height: 40px;
+    border-style: none;
+    border-radius: 10px;
+    background-color: #6495edcc;
+}
+
+.offcanvas-tray-toggle:hover {
+    cursor: pointer;
+    background-color: cornflowerblue;
+}
+
+.offcanvas-tray-tabs {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 3em;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.offcanvas-tray-tab-button {
+    width: 50%;
+    border-style: none;
+    border-radius: 0;
+    background-color: cornflowerblue;
+    font-size: 1.3em;
+}
+
+.offcanvas-tray-tab-button:hover {
+    cursor: ew-resize;
+}
+
+.offcanvas-tab-content {
+    display: none;
+    padding: 10px;
+    height: 95%;
+}
+
+#note-text {
+    height: 100%;
+    resize: none;
+}
+
+/* chatbot msgs */
+#chat {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    overflow-y: scroll;
+    border: 1px solid gray;
+    padding: 10px;
+    position: relative;
+}
+
+#send-message {
+    height: 10%;
+}
+
+.user-message {
+    align-self: flex-end;
+    text-align: right;
+    background-color: cornflowerblue;
+    margin: 5px 0px;
+    padding: 10px;
+    border-radius: 10px 10px 0 10px;
+    display: inline-block;
+    max-width: 80%;
+    hyphens: auto;
+}
+
+.ai-message {
+    align-self: flex-start;
+    text-align: left;
+    background-color: lightgray;
+    margin: 5px 0px;
+    padding: 10px;
+    border-radius: 10px 10px 10px 0;
+    display: inline-block;
+    max-width: 80%;
+    hyphens: auto;
+}
+
+#notif-set-time {
+    width: 100%;
+    margin: 5px 0;
+}
+
+#spinner-ai {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}

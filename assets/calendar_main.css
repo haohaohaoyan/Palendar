@@ -179,3 +179,10 @@
     flex-direction: row;
     width: 100%;
 }
+
+#spinner-loader-main {
+    scale: 2;
+    position: absolute;
+    left: 50vw;
+    top: 50vh;
+}

@@ -28,11 +28,7 @@ var create_event_args = {
 
 var chat_history = []
 
-export const bot = new GoogleGenAI({
-    apiKey: 'AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI'
-});
-
-//I GIVE UP. THIS IS SUBMITTABLE. THIS CAN BE DONE LATER. THERE ARE 3 DAYS LEFT. I CANNOT LEARN HOW TO AND CREATE A FULLY FUNCTIONING SERVER TO SEND THE KEY IN THAT TIME. I'M NOT HOSTING IT THIS TIME. I GIVE UP.
+export const bot = new GoogleGenAI({});
 
 function get_events() {
     let event_list = JSON.parse(localStorage.getItem("event_keys").replaceAll("'", '"'))

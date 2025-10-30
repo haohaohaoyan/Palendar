@@ -29,7 +29,7 @@ var create_event_args = {
 var chat_history = []
 
 export const bot = new GoogleGenAI({
-    apiKey: "AIzaSyCW3Wm3Tn9HkQf1srOSDydxBLgYppUzh0E"
+    apiKey: "Key here! On the open source version, I won't be including any. "
 });
 
 function get_events() {

@@ -292,7 +292,7 @@ document.querySelector(".spinner-border").style.display = "none"
 
 #before everything else: welcome
 if window.localStorage.length == 0:
-    window.alert("Hi! Welcome to Palendar. Create events by clicking on dates. Open the menu with the button on the top left. Please report all issues to our Github page!")
+    window.alert("Hi! Welcome to Palendar. For now, please provide an API key if you can download this. It should be fixed soon. ")
 
 document.querySelector("#offc-chatbot-button").style.backgroundColor = "white"
 document.querySelector("#offc-chatbot").style.display = "block"

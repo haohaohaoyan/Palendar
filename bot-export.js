@@ -28,7 +28,9 @@ var create_event_args = {
 
 var chat_history = []
 
-export const bot = new GoogleGenAI({});
+export const bot = new GoogleGenAI({
+    apiKey: "blah"
+});
 
 function get_events() {
     let event_list = JSON.parse(localStorage.getItem("event_keys").replaceAll("'", '"'))

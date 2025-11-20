@@ -1,7 +1,46 @@
 # Palendar
-AI-powered calendar and planning assistant (at least that's what they told me). Submission for 2025 Congressional App Challenge
+An AI-powered calendar, designed to be accessible, easy to understand and use, and simple to integrate into your daily life. Our goal is to help those who may struggle to plan events or remember things and get them back on the right track without making it hard, technologically demanding, or expensive. Originally a submission for the 2025 Congressional App Challenge, we plan to keep working on our project for the foreseeable future.
 
-Open-source modules and libraries used:
-calendar, datetime, json, random, ast, Pyscript, Pyodide, Bootstrap, Google Gemini SDK
+# WARNING!!
 
-*API key not included yet. Will be adding a backend to the web version afterward. The main branch is open source and requires the user to provide one.
+**While the AI functionality requires an API key, it is currently replaced with a placeholder for security concerns. We should have a working backend by the beginning of next year, although that's not guaranteed.**
+
+## Features
+
+* Event creation and editing
+* AI planning assistant
+* Notepad 
+* *in testing, theoretically works* Daily event reminders
+
+## Open-source modules and libraries used
+
+* Python modules
+    * calendar
+    * datetime
+    * json
+    * random
+    * ast
+* Pyscript
+* Bootstrap
+* Google Gemini SDK
+
+## Roadblocks in development
+
+* Time constraint (we only found out about the Challenge a month before it was due)
+* Limited knowledge and not knowing much about Javascript, requiring using Pyscript to use Python in the browser
+* Incompatibility issues with the Gemini SDK
+* Nonexistent memory for the AI (State management is kinda finicky!)
+* API security in the browser (Currently being fixed and should be done by the end of December 2025)
+
+## Future planned features
+
+* A functioning backend to handle the AI responses instead of running everything in the frontend
+* Proper testing for daily reminders
+* State management for the AI that *actually works*
+* More customization features, such as event colors and themes
+
+## Team
+* Khush Patel: Project founder
+* Haoyan Li: Lead developer
+* Manan Nepal: Video, graphics producer
+* Pratham Kurmachalam: Tester

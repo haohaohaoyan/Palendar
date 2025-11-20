@@ -279,7 +279,7 @@ def set_time():
     current_date = datetime.datetime.now()
     window.localStorage.setItem("notification_time", document.querySelector("#notif-set-time").value)
     set_date = document.querySelector("#notif-set-time").value.split(":")
-    window.localStorage.setItem("next_notif", datetime.datetime(current_date.year, current_date.month, current_date.day + 1, int(set_date[0]), int(set_date[1])))
+    window.localStorage.setItem("next_notif", current_date + datetime.timedelta(1))
 
 #On runtime functions
 #Set first weekday from Mon to Sun

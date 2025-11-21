@@ -1,3 +1,6 @@
+
+<img width="2560" height="1440" alt="Palendar (2)" src="https://github.com/user-attachments/assets/76086aff-10bd-4083-877d-90c79fa091f0" />
+
 # Palendar
 An AI-powered calendar, designed to be accessible, easy to understand and use, and simple to integrate into your daily life. Our goal is to help those who may struggle to plan events or remember things and get them back on the right track without making it hard, technologically demanding, or expensive. Originally a submission for the 2025 Congressional App Challenge, we plan to keep working on our project for the foreseeable future.
 
@@ -40,7 +43,7 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 * More customization features, such as event colors and themes
 
 ## Team
-* Khush Patel: Project founder
-* Haoyan Li: Lead developer
+* Khush Patel: Project cofounder
+* Haoyan Li: Project cofounder & Lead Developer
 * Manan Nepal: Video, graphics producer
 * Pratham Kurmachalam: Tester

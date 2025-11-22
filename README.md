@@ -15,6 +15,26 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 * Notepad 
 * *in testing, theoretically works* Daily event reminders
 
+## Future planned features
+
+* A functioning backend to handle the AI responses instead of running everything in the frontend
+* Proper testing for daily reminders
+* State management for the AI that *actually works*
+* More customization features, such as event colors and themes
+
+## Release Timeline
+
+### Beta Version
+
+* V 1.0 (Current Version)
+* V 1.2 (Backend implementation)
+* V 1.6 (JS migration(Currently In Pyscript))
+* V 2.0 (Redesign ???)
+
+### Stable Version Coming Soon!
+
+Our App is still in Beta testing, so there might be errors or unexpected results. We will continue to work on improving our user experiance under beta, and eventually release the stable version when its ready. Please do not hesitate in sending us feedback, it is valuable for us 😊.
+
 ## Open-source modules and libraries used
 
 * Python modules
@@ -27,6 +47,7 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 * Bootstrap
 * Google Gemini SDK
 
+
 ## Roadblocks in development
 
 * Time constraint (we only found out about the Challenge a month before it was due)
@@ -35,15 +56,14 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 * Nonexistent memory for the AI (State management is kinda finicky!)
 * API security in the browser (Currently being fixed and should be done by the end of December 2025)
 
-## Future planned features
 
-* A functioning backend to handle the AI responses instead of running everything in the frontend
-* Proper testing for daily reminders
-* State management for the AI that *actually works*
-* More customization features, such as event colors and themes
 
 ## Team
 * Khush Patel: Project cofounder
 * Haoyan Li: Project cofounder & Lead Developer
 * Manan Nepal: Video, graphics producer
 * Pratham Kurmachalam: Tester
+
+## Feedback 
+###
+Please do not hesitate in sending us feedback, it is valuable for us 😊.

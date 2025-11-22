@@ -26,10 +26,10 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 
 ### Beta Version
 
-* V 1.0 (Current Version)
-* V 1.2 (Backend implementation)
-* V 1.6 (JS migration(Currently In Pyscript))
-* V 2.0 (Redesign ???)
+* V 0.1 (Current Version)
+* V 0.2 (Backend implementation)
+* V 0.6 (JS migration(Currently In Pyscript))
+* V 2.0 (Redesign ??? and Stable Release)
 
 ### Stable Version Coming Soon!
 

@@ -5,8 +5,6 @@ import datetime, calendar, json, random, ast
 from pyscript.js_modules import genai_bot
 #finally
 
-#api key: AIzaSyCNUX7mhETUC1lQgoK14J_OQSB10oXvnsI
-
 #Constants in caps
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 #Document objects

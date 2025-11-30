@@ -52,12 +52,18 @@
                 <h3>Friday</h3>
                 <h3>Saturday</h3>
         </div>
-        <div class="calendar-body">
+        <div id="calendar-body">
         </div>
         <div class="spinner-border" id="spinner-loader-main"></div>
-        <div class="day-modal" draggable=true>
-            <!--Currently all placeholder assets, not much styling-->
-            <button class="close" title="Close event creation modal">&times;</button>
+        <div class="day-modal">
+            <div class="modal-header">
+                <p style="margin: 0;">Creating event</p>
+                <button class="close" title="Close this window">
+                    <svg viewBox="0 0 20 20" width="1em" height="1em">
+                        <path d="M 10 0 A 1 1 0 0 0 10 20 A 1 1 0 0 0 10 0 L 10 7 L 14 3 L 17 6 L 13 10 L 17 14 L 14 17 L 10 13 L 6 17 L 3 14 L 7 10 L 3 6 L 6 3 L 10 7" stroke="#ffffff" stroke-width="1" fill="#ffffff"/>
+                    </svg>
+                </button>
+            </div>
             <h4 class="title" title="Click on the day to put the event on"></h4>
             <p id="date-storage"></p>
             <p id="date-id-storage"></p>
@@ -65,8 +71,11 @@
             <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
             <button id="event-create-save">Save</button>
         </div>
-        <div class="event-view-modal" draggable=true>
-            <button class="close" title="Close event view modal">&times;</button>
+        <div class="event-view-modal">
+            <div class="modal-header">
+                <p style="margin: 0;">Viewing event</p>
+                <button class="close" title="Close this window">&times;</button>
+            </div>
             <h4 class="title"></h4>
             <p id="event-key-storage"></p>
             <p id="event-view-description"></p>
@@ -78,8 +87,8 @@
     </div>
     <!--Offcanvases below-->
     <!--Tray, then tabs-->
-    <div class="offcanvas-tray" style="left:-25vw;">
-        <button class="offcanvas-tray-toggle">&gt;</button>
+    <div class="offcanvas-tray" style="left:0;">
+        <button class="offcanvas-tray-toggle">&lt;</button>
         <div class="offcanvas-tray-tabs">
             <button class="offcanvas-tray-tab-button" id="offc-chatbot-button">Chatbot</button>
             <button class="offcanvas-tray-tab-button" id="offc-notes-button">Notes</button>
@@ -92,7 +101,7 @@
             </div>
             <textarea id="send-message" placeholder="Ask the AI to make events for you"></textarea>
             <button id="send-message-button">&#x2191; Send</button>
-            <p class="note">The AI does not have memory. Sorry for the inconvenience.</p>
+            <p class="note">The AI does not have memory. Sorry for the inconvenience. We're currently working on state management that ISN'T horrible.</p>
         </div>
         <div class="offcanvas-tab-content" id="offc-notes">
             <textarea id="note-text" placeholder="Write notes here"></textarea>
@@ -100,13 +109,23 @@
         <div class="offcanvas-tab-content" id="offc-settings">
             <p>made by a tiny team of students :&rpar;</p>
             <a href="https://github.com/haohaohaoyan/Palendar">visit our github page!</a><br>
+            <h3>Customization (wip)</h3>
+            <p>Change colors: (placeholders!!!)</p>
+            <input type="color" id="change-color-text"/>
+            <input type="color" id="change-color-background"/>
+            <input type="color" id="change-color-days"/>
+            <input type="color" id="change-color-accent"/>
+            <input type="color" id="change-color-outlines"/>
+            <h3>Reminder notifications</h3>
+            <p>Below features are currently unused! Please don't use them until this message disappears. Sorry for the inconvenience!</p>
             <input type="checkbox" id="toggle-notifications"/>
-            <label for="toggle-notifications">Reminder notifications</label>
+            <label for="toggle-notifications">Toggle notifications</label>
             <input type="time" id="notif-set-time"/>
             <label for="notif-set-time">Set time for notification</label>
-            <button id="clear-localstorage">Clear all events</button>
+            <h3>Danger zone (ooohhh deleting things)</h3>
+            <button id="clear-localstorage">Clear all events and data</button>
         </div>
     </div>
-    <script type="py" src="calendar-setup.py" config="js_import.json"></script>
+    <script src="calendar-setup.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 # Palendar
 An AI-powered calendar, designed to be accessible, easy to understand and use, and simple to integrate into your daily life. Our goal is to help those who may struggle to plan events or remember things and get them back on the right track without making it hard, technologically demanding, or expensive. Originally a submission for the 2025 Congressional App Challenge, we plan to keep working on our project for the foreseeable future.
 
-### <a src="https://www.youtube.com/watch?v=hclkkxjP2ZM">Congressional App Challenge Video (be wary of voicecracks)</a>
+### [Congressional App Challenge Video (be wary of voicecracks)](https://www.youtube.com/watch?v=hclkkxjP2ZM)
 
 # WARNING!!
 
@@ -35,7 +35,7 @@ An AI-powered calendar, designed to be accessible, easy to understand and use, a
 
 ### Stable Version Coming Soon!
 
-The version of Palendar we made for the Congressional App Challenge was originally just a local build. We tried hosting it online via Github Pages, but not having a good understanding of backend programming and hosting led to us having to take it down (because we accidentally leaked our api key...shhhhhh). At the moment, you can still access it <a src="haohaohaoyan.github.io/Palendar">here</a> but it is lacking the AI-based functionalities.
+The version of Palendar we made for the Congressional App Challenge was originally just a local build. We tried hosting it online via Github Pages, but not having a good understanding of backend programming and hosting led to us having to take it down (because we accidentally leaked our api key...shhhhhh). At the moment, you can still access it [here](haohaohaoyan.github.io/Palendar) but it is lacking the AI-based functionalities.
 
 ### What about keeping it open-sourced?
 

@@ -259,18 +259,19 @@ function draggable(element) {
     function start(event) {
         event.preventDefault();
         document.onmouseup = clear;
-        element.onmousemove = drag;
+        document.onmousemove = drag;
         locX = event.clientX, locY = event.clientY;
     };
 
     function drag(event) {
+        event.preventDefault();
         changeX = locX - event.clientX, changeY = locY - event.clientY, locX = event.clientX, locY = event.clientY;
         element.style.left = `${element.offsetLeft - changeX}px`;
         element.style.top = `${element.offsetTop - changeY}px`;
     }
 
     function clear() {
-        element.onmousemove = null, element.onmouseup = null;
+        document.onmousemove = null, document.onmouseup = null;
     }
 }
 
@@ -280,6 +281,6 @@ document.querySelector('#offc-chatbot').style.display = "block";
 document.querySelector('#offc-chatbot-button').style.backgroundColor = "white";
 
 document.querySelector("#spinner-loader-main").style.display = "none"; 
-document.querySelector('#favicon').href = `assets/palendar-favico/palendar-favico-${TODAY.getDate()}.png`
+document.querySelector('#favicon').href = `assets/palendar-favico/palendar-favico-${String(TODAY.getDate()).padStart(2,"0")}.png`
 // Begin!!!
 setup(currentMonth, currentYear);

@@ -89,9 +89,14 @@
     border: 2px solid black;
     border-radius: 6px;
     color: black;
+    background-color: white;
     overflow-wrap: break-word;
     padding: 3px;
     margin: 3px;
+}
+
+.todo {
+    border-radius: 0px;
 }
 
 /*modals: global, day, event, month select */

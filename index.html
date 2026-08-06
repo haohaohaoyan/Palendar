@@ -69,6 +69,10 @@
             <p id="date-id-storage"></p>
             <input placeholder="Name" id="event-create-name"/>
             <textarea placeholder="Description (optional)" id="event-create-description"></textarea>
+            <select id="event-create-type">
+                <option value="event">Event (Standard calendar events.)</option>
+                <option value="todo">Task (Like an event, but can be checked off.)</option>
+            </select>
             <button id="event-create-save">Save</button>
         </div>
         <div class="event-view-modal">
@@ -94,9 +98,20 @@
     <div class="offcanvas-tray" style="left:0;">
         <button class="offcanvas-tray-toggle">&lt;</button>
         <div class="offcanvas-tray-tabs">
+            <button class="offcanvas-tray-tab-button" id="offc-tasks-button">Tasks</button>
             <button class="offcanvas-tray-tab-button" id="offc-chatbot-button">Chatbot</button>
             <button class="offcanvas-tray-tab-button" id="offc-notes-button">Notes</button>
             <button class="offcanvas-tray-tab-button" id="offc-settings-button">Settings</button>
+        </div>
+        <div class="offcanvas-tab-content" id="offc-tasks">
+            <!--Why didn't I think of this earlier???-->
+            <input id="showcomplete" type="checkbox">
+            <label for="showcomplete">Show completed tasks</label>
+            <div id="task-container">
+                <div class="task"><h3>SPOING</h3></div>
+                <div class="task"></div>
+                <div class="task"></div>
+            </div>
         </div>
         <div class="offcanvas-tab-content" id="offc-chatbot">
             <div id="chat">

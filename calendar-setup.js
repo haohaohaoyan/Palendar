@@ -1,11 +1,17 @@
+// Essentially the script for anything on client-side. 
+
 const TODAY = new Date();
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var currentMonth = TODAY.getMonth();
 var currentYear = TODAY.getFullYear();
 
 function htmlReformatStr(string) {
-    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); // hatsune miku??!?!;
-}
+    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); // hatsune miku??!?!
+};
+
+function htmlUnreformatStr(string) {
+    return string.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'"); // un-hatsune miku??!?!
+};
 
 function setup(month, year) {
     // Clean up, set date, hide modals
@@ -44,7 +50,14 @@ function setup(month, year) {
             // Use event ids in key list to get events
             let eventParsed = JSON.parse(localStorage.getItem(event));
             try {
-                document.querySelector(`#${eventParsed.date}`).innerHTML += `<div class='event' id='${event}' title='${eventParsed.description}'>${eventParsed.name}</div>`;
+                if (eventParsed.todo === false) {
+                    document.querySelector(`#${eventParsed.date}`).innerHTML += `<div class='event' id='${event}' title='${eventParsed.description}'>${eventParsed.name}</div>`;
+                } else if (eventParsed.todo === true) {
+                    document.querySelector(`#${eventParsed.date}`).innerHTML += `<div class='event todo' id='${event}' title='${eventParsed.description}'>${eventParsed.name}</div>`;
+                } else {
+                    alert("Your events are probably not appearing because we just made a new update. Please clear localstorage. Sorry for the data loss.")
+                    break
+                }
             } catch (TypeError) {} // do nothing, this is because day of event is on date not shown
         };
     } 
@@ -58,13 +71,14 @@ function setup(month, year) {
     };
 }
 
-function createEvent(name, date, description = '', color = '', priority = 0, changeId = '') {
+function createEvent(name, date, description = '', color = '', priority = 0, changeId = '', todo = false) {
     // aww, can't type annotate?????
     // construct dictionary from inputs
     let output = JSON.stringify({
         'name': htmlReformatStr(name),
         'date': date,
-        'description': htmlReformatStr(description) 
+        'description': htmlReformatStr(description) ,
+        'todo': todo
     });
     // Priority and color are planned, not in yet bc "we got bigger fish to fry" 
     if (changeId != '') {
@@ -108,7 +122,7 @@ document.querySelector('#event-create-save').addEventListener('click', function(
         window.alert("No name for event!");
         return
     } else {
-        createEvent(document.querySelector('#event-create-name').value, document.querySelector('#date-storage').innerText, document.querySelector('#event-create-description').value, [], 0, document.querySelector('#date-id-storage').innerText);
+        createEvent(document.querySelector('#event-create-name').value, document.querySelector('#date-storage').innerText, document.querySelector('#event-create-description').value, [], 0, document.querySelector('#date-id-storage').innerText, document.querySelector('#event-create-type').value == "todo");
         // blank args for the unimplemented ones
         document.querySelector('#event-create-name').value = "";
         document.querySelector('#event-create-description').value = "";
@@ -162,15 +176,15 @@ document.querySelector('#event-edit-button').addEventListener('click', function(
 
     // fill out
     let eventData = JSON.parse(localStorage.getItem(eventViewModal.querySelector('#event-key-storage').innerText));
-    dayModal.querySelector('#event-create-name').value = eventData.name
-    dayModal.querySelector('.modal-header > p').innerText = `Editing event "${eventData.name}"`
-    dayModal.querySelector('#event-create-description').value = eventData.description
+    dayModal.querySelector('#event-create-name').value = htmlUnreformatStr(eventData.name);
+    dayModal.querySelector('.modal-header > p').innerText = `Editing event "${htmlUnreformatStr(eventData.name)}"`;
+    dayModal.querySelector('#event-create-description').value = htmlUnreformatStr(eventData.description);
     dayModal.querySelector('#date-storage').innerText = eventData.date
     // format for title
     let dateList = String(eventData.date).split('-');
     dayModal.querySelector('.title').innerText = `${MONTHS[dateList[1]-1]} ${Number(dateList[0].replace('d', ''))}, ${dateList[2]}`;
     // used to provide a target for changing
-    dayModal.querySelector('#date-id-storage').innerText = eventViewModal.querySelector('#event-key-storage').innerText
+    dayModal.querySelector('#date-id-storage').innerText = eventViewModal.querySelector('#event-key-storage').innerText;
 });
 
 // Offcanvas functions
@@ -198,10 +212,10 @@ for (const button of document.querySelectorAll('.offcanvas-tray-tab-button')) {
             tab.style.display = "none";
         };
         for (const tabButton of document.querySelectorAll(".offcanvas-tray-tab-button")) {
-            tabButton.style.backgroundColor = "cornflowerblue";
-        }
+            tabButton.classList.remove("offcanvas-button-current");
+        };
         document.querySelector(`#${String(event.currentTarget.id).replace('-button', '')}`).style.display = "block";
-        document.querySelector(`#${event.currentTarget.id}`).style.backgroundColor = "white";
+        event.currentTarget.classList.add("offcanvas-button-current")
     })
 };
 
@@ -214,6 +228,8 @@ for (const eventItem of document.querySelectorAll('.close')) {
     });
 };
 
+
+// For these two functions, reformatting into a date automatically wraps around, so (2025, 13) becomes (2026, 1)
 document.querySelector('#button-month-left').addEventListener('click', function() {
     let newDate = new Date(currentYear, currentMonth-1);
     setup(newDate.getMonth(), newDate.getFullYear());
@@ -231,7 +247,7 @@ document.querySelector('#calendar-selector').addEventListener('click', function(
 });
 
 document.querySelector('#confirm-month-select').addEventListener('click', function() {
-    // catch empty year field (month cannot be invalid)
+    // catch empty year field (month cannot be invalid thanks to select tag rules)
     if (isNaN(document.querySelector('#select-year').value)) {
         document.querySelector('#select-year').value = currentYear;
     }
@@ -250,7 +266,7 @@ document.querySelector('#clear-localstorage').addEventListener('click', function
     };
 });
 
-// Drag function *used w3 example.... i'm so bad at js...maybe update to be smoother with fast movements by either stealing google's bezier tweening anims + rewrite to not depend on offsets??
+// Drag function *used w3 example.... i'm so bad at js...maybe i should steal google calendar's fancy bezier tween effects to make it look better
 
 function draggable(element) {
     var changeX = 0, changeY = 0, locX = 0, locY = 0;
@@ -277,10 +293,11 @@ function draggable(element) {
 
 draggable(document.querySelector('.day-modal')), draggable(document.querySelector('.event-view-modal'))
 
-document.querySelector('#offc-chatbot').style.display = "block";
-document.querySelector('#offc-chatbot-button').style.backgroundColor = "white";
+document.querySelector('#offc-tasks').style.display = "block";
+document.querySelector('#offc-tasks-button').classList.add("offcanvas-button-current")
 
 document.querySelector("#spinner-loader-main").style.display = "none"; 
 document.querySelector('#favicon').href = `assets/palendar-favico/palendar-favico-${String(TODAY.getDate()).padStart(2,"0")}.png`
+
 // Begin!!!
 setup(currentMonth, currentYear);

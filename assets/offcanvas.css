@@ -59,15 +59,19 @@ button {
 }
 
 .offcanvas-tray-tab-button {
-    width: 50%;
     border-style: none;
     border-radius: 0;
-    background-color: cornflowerblue;
     font-size: 1.3em;
+    transition-duration: 0.3s;
 }
 
 .offcanvas-tray-tab-button:hover {
     cursor: ew-resize;
+    background-color: hsl(219 79 80);
+}
+
+.offcanvas-button-current, .offcanvas-button-current:hover {
+    background-color: white;
 }
 
 .offcanvas-tab-content {
@@ -130,3 +134,24 @@ button {
     left: 10px;
     bottom: 10px;
 }
+
+/* reminder list */
+
+#task-container {
+    width: 100%;
+    height: stretch;
+}
+
+.task {
+    height: 3em;
+    border: 2px solid black;
+    color: black;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+.task > h3 {
+    color: cornflowerblue;
+}
+
+/* fat custom checkbox */
